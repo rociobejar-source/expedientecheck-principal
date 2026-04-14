@@ -280,11 +280,17 @@ body {
 .equipo .section-eyebrow { color: var(--gold-light); }
 .equipo .section-title { color: var(--white); }
 .equipo .section-subtitle { color: rgba(255,255,255,.55); }
-.equipo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; margin-top: 48px; max-width: 800px; }
+.equipo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 48px; }
 .equipo-card {
-  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-  border-radius: 16px; padding: 32px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px;
+  padding: 32px;
   transition: all .25s;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .equipo-card:hover { background: rgba(255,255,255,.09); border-color: rgba(201,149,42,.3); }
 .equipo-avatar {
@@ -679,9 +685,9 @@ footer {
     <div class="equipo-role">Liderazgo del Proyecto</div>
     <div class="equipo-bio">
       Especialista en inversión pública con amplia trayectoria en el ciclo de proyectos del Estado peruano. Ex Directora General de Invierte.pe (DGPMI-MEF), con experiencia directa en el diseño, implementación y mejora continua del sistema de inversiones públicas del país.
-    </div>
+<br><br>
+Experiencia en el sector privado liderando la creación de soluciones tecnológicas orientadas a eficiencia operativa y toma de decisiones basada en datos.    </div>
   </div>
-
   <div class="equipo-card">
     <div class="equipo-avatar">MB</div>
     <div class="equipo-name">Marco Béjar</div>
