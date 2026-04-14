@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expediente Check · Sistema de Revisión de Expedientes Técnicos</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0B1F3A;
+  --navy-mid: #132D50;
+  --navy-light: #1E3F6B;
+  --gold: #C9952A;
+  --gold-light: #E8B84B;
+  --cream: #F7F3EC;
+  --cream-dark: #EDE8DF;
+  --text: #1A1A2E;
+  --text-muted: #6B7280;
+  --green: #0D7A5F;
+  --green-light: #E8F7F3;
+  --amber: #B45309;
+  --amber-light: #FEF3C7;
+  --red: #B91C1C;
+  --red-light: #FEE2E2;
+  --border: #DDD8CF;
+  --white: #FFFFFF;
+  --shadow: 0 4px 24px rgba(11,31,58,0.10);
+  --shadow-lg: 0 12px 48px rgba(11,31,58,0.16);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+}
+.topbar-brand {
+  display: flex; align-items: center; gap: 12px;
+}
+.topbar-logo {
+  width: auto; height: 32px; padding: 0 10px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-weight: 600; color: var(--navy); font-size: 11px; letter-spacing: -0.2px; white-space: nowrap;
+}
+.topbar-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 300; color: var(--white);
+  font-size: 15px; letter-spacing: .3px;
+}
+.topbar-name span { color: var(--gold-light); font-weight: 600; }
+.topbar-meta {
+  display: flex; align-items: center; gap: 20px;
+}
+.topbar-badge {
+  background: rgba(201,149,42,.15);
+  border: 1px solid rgba(201,149,42,.35);
+  color: var(--gold-light);
+  font-size: 11px; font-weight: 500;
+  padding: 3px 10px; border-radius: 20px;
+  letter-spacing: .5px; text-transform: uppercase;
+}
+.topbar-user {
+  display: flex; align-items: center; gap: 8px;
+  color: rgba(255,255,255,.7); font-size: 13px;
+}
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, #2D6A4F, #1B4332);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 12px; font-weight: 600;
+}
+
+/* ── NAV TABS ── */
+.nav-tabs {
+  background: var(--navy-mid);
+  display: flex; align-items: center;
+  padding: 0 32px; gap: 4px;
+  border-bottom: 2px solid rgba(255,255,255,.06);
+}
+.nav-tab {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 20px;
+  color: rgba(255,255,255,.5);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none; background: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all .2s ease;
+  letter-spacing: .2px;
+}
+.nav-tab:hover { color: rgba(255,255,255,.8); }
+.nav-tab.active {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold);
+}
+.nav-tab .tab-icon { font-size: 15px; }
+.nav-badge {
+  background: var(--red); color: white;
+  font-size: 10px; font-weight: 600;
+  padding: 1px 6px; border-radius: 10px;
+  min-width: 18px; text-align: center;
+}
+
+/* ── MAIN LAYOUT ── */
+.page { display: none; padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 28px;
+}
+.page-title { font-family: 'Fraunces', serif; font-weight: 300; font-size: 26px; color: var(--navy); }
+.page-title span { font-weight: 600; }
+.page-subtitle { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--white); border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.card-title {
+  font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600;
+  color: var(--navy); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ── STAT CARDS ── */
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--white); border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 20px 24px;
+  box-shadow: var(--shadow);
+}
+.stat-label { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
+.stat-value { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 600; color: var(--navy); line-height: 1; }
+.stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+.stat-up { color: var(--green); font-weight: 600; }
+.stat-down { color: var(--red); font-weight: 600; }
+
+/* ── SEMAFORO ── */
+.semaforo {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px;
+}
+.semaforo.verde { background: var(--green-light); color: var(--green); }
+.semaforo.amarillo { background: var(--amber-light); color: var(--amber); }
+.semaforo.rojo { background: var(--red-light); color: var(--red); }
+.semaforo .dot { width: 7px; height: 7px; border-radius: 50%; }
+.semaforo.verde .dot { background: var(--green); }
+.semaforo.amarillo .dot { background: var(--amber); }
+.semaforo.rojo .dot { background: var(--red); }
+
+/* ──────────────────────────────────
+   TAB 1: CHECKLIST ET
+────────────────────────────────── */
+.checklist-layout { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+
+.checklist-form { }
+
+.section-group {
+  background: var(--white); border-radius: 12px;
+  border: 1px solid var(--border); margin-bottom: 12px;
+  box-shadow: var(--shadow); overflow: hidden;
+}
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; cursor: pointer;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  user-select: none;
+}
+.section-header:hover { background: #FAFAF8; }
+.section-header-left { display: flex; align-items: center; gap: 10px; }
+.section-icon { font-size: 16px; }
+.section-name { font-weight: 600; font-size: 13px; color: var(--navy); }
+.section-tag {
+  font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .6px;
+  padding: 2px 8px; border-radius: 10px; margin-left: 4px;
+}
+.tag-critico { background: var(--red-light); color: var(--red); }
+.tag-alto { background: var(--amber-light); color: var(--amber); }
+.tag-medio { background: #E0E7FF; color: #3730A3; }
+.section-progress { display: flex; align-items: center; gap: 8px; }
+.progress-mini {
+  width: 80px; height: 5px; background: var(--cream-dark); border-radius: 3px; overflow: hidden;
+}
+.progress-mini-fill { height: 100%; border-radius: 3px; background: var(--green); transition: width .4s ease; }
+.section-body { padding: 8px 0; }
+
+.check-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 20px; border-bottom: 1px solid var(--cream-dark);
+  transition: background .15s;
+}
+.check-item:last-child { border-bottom: none; }
+.check-item:hover { background: #FAFAF8; }
+.check-item input[type=checkbox] {
+  width: 16px; height: 16px; accent-color: var(--navy);
+  cursor: pointer; flex-shrink: 0; margin-top: 2px;
+}
+.check-label { flex: 1; }
+.check-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+.check-norm { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-top: 3px; }
+.check-item.checked .check-text { color: var(--text-muted); text-decoration: line-through; }
+
+/* Panel derecho */
+.sidebar-panel { position: sticky; top: 112px; }
+.score-ring-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 28px 0 20px;
+}
+.score-ring {
+  width: 130px; height: 130px; position: relative;
+  margin-bottom: 14px;
+}
+.score-ring svg { transform: rotate(-90deg); }
+.score-ring-val {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  text-align: center;
+}
+.score-num { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 600; color: var(--navy); }
+.score-pct { font-size: 12px; color: var(--text-muted); }
+
+.obs-list { }
+.obs-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--cream-dark);
+  font-size: 12px;
+}
+.obs-item:last-child { border-bottom: none; }
+.obs-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.obs-critico .obs-dot { background: var(--red); }
+.obs-alto .obs-dot { background: var(--amber); }
+.obs-text { color: var(--text); line-height: 1.4; }
+.obs-norm { color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 10px; }
+
+.btn-primary {
+  background: var(--navy);
+  color: white; font-size: 13px; font-weight: 600;
+  padding: 12px 24px; border-radius: 8px; border: none;
+  cursor: pointer; width: 100%; transition: all .2s;
+  letter-spacing: .3px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+
+.btn-secondary {
+  background: var(--cream); color: var(--navy);
+  font-size: 13px; font-weight: 500;
+  padding: 10px 20px; border-radius: 8px;
+  border: 1px solid var(--border); cursor: pointer; transition: all .2s;
+}
+.btn-secondary:hover { background: var(--cream-dark); }
+
+/* ──────────────────────────────────
+   TAB 2: ASISTENTE NORMATIVO
+────────────────────────────────── */
+.asistente-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; height: calc(100vh - 180px); }
+
+.preguntas-panel { display: flex; flex-direction: column; gap: 8px; }
+.preguntas-panel .card-title { margin-bottom: 10px; }
+.pregunta-btn {
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 14px;
+  cursor: pointer; text-align: left; transition: all .2s;
+  font-size: 12px; color: var(--text); line-height: 1.4;
+  font-family: 'DM Sans', sans-serif;
+}
+.pregunta-btn:hover { background: var(--cream-dark); border-color: var(--navy-light); }
+.pregunta-btn.active {
+  background: var(--navy); color: white; border-color: var(--navy);
+}
+.pregunta-cat {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .6px; margin-bottom: 4px;
+}
+.pregunta-btn.active .pregunta-cat { color: var(--gold-light); }
+.pregunta-btn .pregunta-cat { color: var(--text-muted); }
+
+.chat-panel {
+  background: var(--white); border-radius: 12px;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.chat-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.chat-header-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.chat-header-text { }
+.chat-header-name { font-weight: 600; font-size: 13px; color: var(--navy); }
+.chat-header-sub { font-size: 11px; color: var(--text-muted); }
+.chat-status { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--green); margin-left: auto; }
+.chat-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+.chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.msg { display: flex; gap: 10px; animation: fadeIn .3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.msg.user { flex-direction: row-reverse; }
+.msg-avatar {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600;
+}
+.msg.bot .msg-avatar { background: linear-gradient(135deg, var(--navy), var(--navy-light)); color: white; }
+.msg.user .msg-avatar { background: linear-gradient(135deg, #2D6A4F, #1B4332); color: white; }
+.msg-bubble {
+  max-width: 78%; padding: 12px 16px; border-radius: 12px;
+  font-size: 13px; line-height: 1.6;
+}
+.msg.bot .msg-bubble { background: var(--cream); border: 1px solid var(--border); border-top-left-radius: 4px; }
+.msg.user .msg-bubble { background: var(--navy); color: white; border-top-right-radius: 4px; }
+.msg-bubble strong { font-weight: 600; }
+.norm-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--navy); color: var(--gold-light);
+  font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+  padding: 2px 8px; border-radius: 4px; margin: 2px 2px 0;
+}
+
+.chat-input-area {
+  padding: 16px 20px; border-top: 1px solid var(--border);
+  display: flex; gap: 10px;
+}
+.chat-input {
+  flex: 1; padding: 10px 14px; border-radius: 8px;
+  border: 1px solid var(--border); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--text); background: var(--cream);
+  outline: none; transition: border .2s;
+}
+.chat-input:focus { border-color: var(--navy); background: white; }
+.chat-send {
+  background: var(--navy); color: white; border: none;
+  border-radius: 8px; padding: 10px 16px; cursor: pointer;
+  font-size: 16px; transition: background .2s;
+}
+.chat-send:hover { background: var(--navy-light); }
+
+/* ──────────────────────────────────
+   TAB 3: MONITOR DE OBRAS
+────────────────────────────────── */
+.monitor-filters {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+}
+.filter-pill {
+  padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  border: 1px solid var(--border); cursor: pointer; background: var(--white);
+  transition: all .2s; color: var(--text);
+}
+.filter-pill:hover { background: var(--cream-dark); }
+.filter-pill.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+.obras-table {
+  background: var(--white); border-radius: 12px;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.obras-table table { width: 100%; border-collapse: collapse; }
+.obras-table th {
+  background: var(--navy); color: rgba(255,255,255,.7);
+  font-size: 11px; font-weight: 500; text-transform: uppercase;
+  letter-spacing: .7px; padding: 12px 16px; text-align: left;
+}
+.obras-table th:first-child { color: white; }
+.obras-table td { padding: 14px 16px; border-bottom: 1px solid var(--cream-dark); font-size: 13px; vertical-align: middle; }
+.obras-table tr:last-child td { border-bottom: none; }
+.obras-table tr:hover td { background: #FAFAF9; }
+
+.obra-name { font-weight: 500; color: var(--navy); font-size: 13px; }
+.obra-entidad { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.obra-cui { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); }
+.monto-val { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; }
+
+.alerta-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.alerta-chip {
+  font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 4px;
+  display: flex; align-items: center; gap: 3px;
+}
+.alerta-chip.rojo { background: var(--red-light); color: var(--red); }
+.alerta-chip.amarillo { background: var(--amber-light); color: var(--amber); }
+.alerta-chip.verde { background: var(--green-light); color: var(--green); }
+
+.progress-bar-wrap { display: flex; align-items: center; gap: 8px; }
+.progress-bar { width: 80px; height: 6px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width .5s; }
+.progress-fill.ok { background: var(--green); }
+.progress-fill.warn { background: var(--amber); }
+.progress-fill.bad { background: var(--red); }
+.progress-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); }
+
+.detail-btn {
+  padding: 5px 12px; border-radius: 6px;
+  background: var(--cream); border: 1px solid var(--border);
+  font-size: 11px; font-weight: 500; cursor: pointer; color: var(--navy);
+  transition: all .2s;
+}
+.detail-btn:hover { background: var(--navy); color: white; }
+
+/* alert banner */
+.alert-banner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; border-radius: 10px; margin-bottom: 20px;
+  font-size: 13px;
+}
+.alert-banner.rojo { background: var(--red-light); border: 1px solid #FECACA; color: var(--red); }
+.alert-banner.amarillo { background: var(--amber-light); border: 1px solid #FDE68A; color: var(--amber); }
+.alert-banner strong { font-weight: 600; }
+
+/* modal overlay */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(11,31,58,.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; display: none;
+}
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+.modal {
+  background: var(--white); border-radius: 16px;
+  width: 680px; max-height: 85vh; overflow-y: auto;
+  box-shadow: var(--shadow-lg); padding: 32px;
+  position: relative;
+}
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 10px; cursor: pointer;
+  font-size: 12px; color: var(--text-muted);
+}
+.modal-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; }
+.modal-section { margin-bottom: 20px; }
+.modal-section-title { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .7px; color: var(--navy); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--cream-dark); }
+.modal-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid var(--cream-dark); }
+.modal-row:last-child { border-bottom: none; }
+.modal-row-label { color: var(--text-muted); }
+.modal-row-val { font-weight: 500; color: var(--navy); }
+
+/* informe modal */
+.informe-header {
+  background: var(--navy); color: white; padding: 20px 24px; margin: -32px -32px 24px;
+  border-radius: 16px 16px 0 0;
+}
+.informe-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 300; }
+.informe-title strong { font-weight: 600; }
+.informe-meta { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 4px; }
+.obs-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.obs-table th { background: var(--cream-dark); font-weight: 600; padding: 8px 12px; text-align: left; color: var(--navy); }
+.obs-table td { padding: 8px 12px; border-bottom: 1px solid var(--cream-dark); vertical-align: top; }
+.obs-table tr:last-child td { border-bottom: none; }
+
+/* ── UPLOAD SCREEN ── */
+#uploadScreen {
+  min-height: 100vh; background: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; padding: 40px;
+  position: fixed; inset: 0; z-index: 500;
+  background: radial-gradient(ellipse at 30% 40%, #1E3F6B 0%, #0B1F3A 60%);
+}
+.upload-screen-inner { max-width: 640px; width: 100%; text-align: center; }
+.upload-logo {
+  width: auto; min-width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 20px;
+  padding: 0 20px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-weight: 600; color: var(--navy); font-size: 18px;
+  box-shadow: 0 8px 32px rgba(201,149,42,.35); letter-spacing: -0.3px;
+}
+.upload-screen-title {
+  font-family: 'Fraunces', serif; font-weight: 300; font-size: 36px;
+  color: var(--white); margin-bottom: 8px; line-height: 1.2;
+}
+.upload-screen-title strong { font-weight: 600; color: var(--gold-light); }
+.upload-screen-sub { color: rgba(255,255,255,.5); font-size: 14px; margin-bottom: 40px; }
+
+.drop-zone {
+  border: 2px dashed rgba(201,149,42,.4);
+  border-radius: 16px; padding: 48px 32px;
+  background: rgba(255,255,255,.04);
+  cursor: pointer; transition: all .25s;
+  position: relative;
+}
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: var(--gold); background: rgba(201,149,42,.08);
+  transform: translateY(-2px);
+}
+.drop-icon { font-size: 48px; margin-bottom: 16px; display: block; }
+.drop-title { color: white; font-size: 18px; font-weight: 500; margin-bottom: 8px; }
+.drop-sub { color: rgba(255,255,255,.4); font-size: 13px; margin-bottom: 24px; }
+.drop-zone input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.drop-formats {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+}
+.format-chip {
+  background: rgba(255,255,255,.08); color: rgba(255,255,255,.5);
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  padding: 4px 10px; border-radius: 6px;
+}
+
+/* progress bar full screen */
+.upload-progress { display: none; padding: 40px 0; }
+.upload-progress.show { display: block; }
+.file-card {
+  background: rgba(255,255,255,.08); border-radius: 12px;
+  padding: 20px 24px; display: flex; align-items: center; gap: 16px;
+  margin-bottom: 24px; border: 1px solid rgba(255,255,255,.1);
+}
+.file-icon { font-size: 32px; }
+.file-info { flex: 1; text-align: left; }
+.file-name { color: white; font-weight: 500; font-size: 14px; }
+.file-size { color: rgba(255,255,255,.4); font-size: 12px; margin-top: 3px; }
+.progress-track {
+  height: 6px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden;
+  margin: 16px 0 8px;
+}
+.progress-track-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  width: 0%; transition: width .15s linear;
+}
+.progress-steps { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+.progress-step {
+  display: flex; align-items: center; gap: 10px;
+  color: rgba(255,255,255,.3); font-size: 13px; transition: color .3s;
+}
+.progress-step.active { color: var(--gold-light); }
+.progress-step.done { color: rgba(255,255,255,.6); }
+.step-dot {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center;
+  font-size: 10px; transition: all .3s;
+}
+.progress-step.active .step-dot { background: var(--gold); color: var(--navy); animation: pulse 1s infinite; }
+.progress-step.done .step-dot { background: var(--green); color: white; }
+
+/* ── UPLOAD PANEL inside Tab 1 ── */
+.upload-panel {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  border-radius: 12px; padding: 20px 24px;
+  display: flex; align-items: center; gap: 20px;
+  margin-bottom: 20px; border: 1px solid rgba(255,255,255,.1);
+  box-shadow: var(--shadow-lg);
+}
+.upload-panel-icon { font-size: 32px; flex-shrink: 0; }
+.upload-panel-text { flex: 1; }
+.upload-panel-title { color: white; font-weight: 600; font-size: 14px; }
+.upload-panel-sub { color: rgba(255,255,255,.5); font-size: 12px; margin-top: 3px; }
+.upload-panel-file {
+  background: rgba(255,255,255,.1); border-radius: 8px;
+  padding: 8px 14px; display: flex; align-items: center; gap: 8px;
+  color: var(--gold-light); font-size: 12px; font-family: 'DM Mono', monospace;
+}
+.btn-upload-inline {
+  background: var(--gold); color: var(--navy);
+  font-size: 12px; font-weight: 600; padding: 10px 18px;
+  border-radius: 8px; border: none; cursor: pointer; white-space: nowrap;
+  transition: all .2s; flex-shrink: 0; position: relative; overflow: hidden;
+}
+.btn-upload-inline input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer;
+}
+.btn-upload-inline:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+.ai-prellenado-banner {
+  background: linear-gradient(135deg, #064E3B, #065F46);
+  border: 1px solid #10B981; border-radius: 10px;
+  padding: 14px 18px; margin-bottom: 20px;
+  display: flex; align-items: flex-start; gap: 12px;
+  animation: fadeInDown .4s ease;
+}
+@keyframes fadeInDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+.ai-banner-icon { font-size: 22px; flex-shrink: 0; }
+.ai-banner-text { flex: 1; }
+.ai-banner-title { color: #6EE7B7; font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+.ai-banner-sub { color: rgba(110,231,183,.7); font-size: 12px; line-height: 1.5; }
+.ai-banner-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.ai-chip {
+  font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 500;
+  display: flex; align-items: center; gap: 4px;
+}
+.ai-chip.found { background: rgba(16,185,129,.2); color: #6EE7B7; }
+.ai-chip.missing { background: rgba(239,68,68,.2); color: #FCA5A5; }
+.ai-chip.warn { background: rgba(245,158,11,.2); color: #FCD34D; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .checklist-layout, .asistente-layout { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+  .sidebar-panel { position: static; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ UPLOAD SCREEN ═══════ -->
+<div id="uploadScreen">
+  <div class="upload-screen-inner">
+    <div class="upload-logo">ExpedienteCheck</div>
+    <div class="upload-screen-title">Sistema de Revisión de<br><strong>Expedientes Técnicos</strong></div>
+    <div class="upload-screen-sub">Expediente Check · Revisión inteligente de obras públicas</div>
+
+    <div class="drop-zone" id="dropZone">
+      <input type="file" accept=".pdf,.zip,.docx" onchange="handleFileUpload(this.files[0])">
+      <span class="drop-icon">📂</span>
+      <div class="drop-title">Arrastra el Expediente Técnico aquí</div>
+      <div class="drop-sub">o haz clic para seleccionar el archivo</div>
+      <div class="drop-formats">
+        <span class="format-chip">PDF</span>
+        <span class="format-chip">ZIP (carpeta ET)</span>
+        <span class="format-chip">DOCX</span>
+      </div>
+    </div>
+
+    <div class="upload-progress" id="uploadProgress">
+      <div class="file-card">
+        <div class="file-icon">📄</div>
+        <div class="file-info">
+          <div class="file-name" id="uploadFileName">ET_Mejoramiento_Via_Acora.pdf</div>
+          <div class="file-size" id="uploadFileSize">4.2 MB · Expediente Técnico</div>
+          <div class="progress-track"><div class="progress-track-fill" id="progressFill"></div></div>
+        </div>
+        <div style="color:var(--gold-light);font-size:13px;font-weight:600" id="progressPct">0%</div>
+      </div>
+      <div class="progress-steps">
+        <div class="progress-step" id="step1"><div class="step-dot">1</div><span>Leyendo estructura del documento...</span></div>
+        <div class="progress-step" id="step2"><div class="step-dot">2</div><span>Extrayendo índice y secciones del ET...</span></div>
+        <div class="progress-step" id="step3"><div class="step-dot">3</div><span>Verificando documentos contra Directiva 001-2019-EF/63.01...</span></div>
+        <div class="progress-step" id="step4"><div class="step-dot">4</div><span>Cruzando con normas sectoriales (MTC, MINSA, MINEDU, RNE)...</span></div>
+        <div class="progress-step" id="step5"><div class="step-dot">5</div><span>Generando pre-llenado del checklist...</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button onclick="simulateUpload()" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:10px 18px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif">
+        🎬 Demo: simular análisis de ET
+      </button>
+      <button onclick="skipToApp()" style="background:rgba(255,255,255,.05);color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 18px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif">
+        Saltar al sistema →
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="mainApp" style="display:none">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">ExpedienteCheck</div>
+    <div class="topbar-name"><span>Expediente Check</span> · Sistema de Revisión de Expedientes Técnicos</div>
+  </div>
+  <div class="topbar-meta">
+    <div class="topbar-badge">🏛 Invierte.pe — DGPMI/MEF</div>
+    <div class="topbar-user">
+      <div class="avatar">MR</div>
+      <span>María Ríos · Jefe OPI Puno</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showTab('checklist',this)">
+    <span class="tab-icon">✅</span> Revisar Expediente Técnico
+  </button>
+  <button class="nav-tab" onclick="showTab('asistente',this)">
+    <span class="tab-icon">💬</span> Asistente Normativo
+  </button>
+  <button class="nav-tab" onclick="showTab('monitor',this)">
+    <span class="tab-icon">📡</span> Monitor de Obras
+    <span class="nav-badge">3</span>
+  </button>
+</div>
+
+<!-- ═══════════════════════════════
+     TAB 1: CHECKLIST ET
+═══════════════════════════════ -->
+<div id="tab-checklist" class="page active">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Revisión de <span>Expediente Técnico</span></div>
+      <div class="page-subtitle" id="etSubtitle">Mejoramiento vía de acceso a comunidades de Ácora — CUI 2451872 · GORE Puno · Vialidad</div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn-secondary" onclick="resetChecklist()">↺ Limpiar</button>
+      <button class="btn-primary" onclick="openInforme()">📄 Generar Informe PDF</button>
+    </div>
+  </div>
+
+  <!-- UPLOAD PANEL -->
+  <div class="upload-panel">
+    <div class="upload-panel-icon">📄</div>
+    <div class="upload-panel-text">
+      <div class="upload-panel-title" id="uploadPanelTitle">Expediente Técnico cargado · Análisis IA completado</div>
+      <div class="upload-panel-sub">9 de 14 ítems detectados automáticamente. Verifica y ajusta según tu criterio profesional.</div>
+    </div>
+    <div class="upload-panel-file" id="uploadedFileName">📎 ET_Mejoramiento_Via_Acora.pdf</div>
+    <div style="position:relative">
+      <button class="btn-upload-inline">
+        🔄 Cambiar ET
+        <input type="file" accept=".pdf,.zip,.docx" onchange="handleFileReplace(this.files[0])">
+      </button>
+    </div>
+  </div>
+
+  <!-- AI PRE-FILL BANNER -->
+  <div class="ai-prellenado-banner" id="aiBanner">
+    <div class="ai-banner-icon">🤖</div>
+    <div class="ai-banner-text">
+      <div class="ai-banner-title">Análisis completado — ítems marcados automáticamente según el contenido del documento</div>
+      <div class="ai-banner-sub">El sistema identificó los documentos presentes en el ET y pre-marcó los ítems detectados. Los no marcados requieren verificación o subsanación.</div>
+      <div class="ai-banner-chips">
+        <span class="ai-chip found">✓ Estudio de suelos (pág. 23)</span>
+        <span class="ai-chip found">✓ Planos firmados (pág. 87)</span>
+        <span class="ai-chip found">✓ APUs incluidos (pág. 134)</span>
+        <span class="ai-chip found">✓ Cronograma Gantt (pág. 158)</span>
+        <span class="ai-chip warn">⚠ APUs con fecha dic. 2023 — verificar vigencia</span>
+        <span class="ai-chip missing">✗ Estudio hidrológico no encontrado</span>
+        <span class="ai-chip missing">✗ Saneamiento físico-legal ausente</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="checklist-layout">
+    <!-- FORMULARIO -->
+    <div class="checklist-form" id="checklistForm">
+
+      <!-- ESTUDIOS BÁSICOS -->
+      <div class="section-group">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-header-left">
+            <span class="section-icon">🔬</span>
+            <span class="section-name">Estudios Básicos</span>
+            <span class="section-tag tag-critico">Crítico</span>
+          </div>
+          <div class="section-progress">
+            <div class="progress-mini"><div class="progress-mini-fill" id="prog-estudios" style="width:0%"></div></div>
+            <span style="font-size:11px;color:var(--text-muted)" id="cnt-estudios">0/4</span>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Estudio de mecánica de suelos con calicatas suficientes (mín. 1 cada 500m de vía)</div><div class="check-norm">NTP E.050 · Manual de Ensayos MTC · OS.060</div></div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Estudio hidrológico e hidráulico para diseño de drenaje y alcantarillas</div><div class="check-norm">Manual de Hidrología MTC · ANA Resolución 154-2016</div></div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Estudio topográfico con levantamiento en campo verificado (no en gabinete)</div><div class="check-norm">Manual de Diseño Geométrico DG-2018 (MTC)</div></div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Análisis de vulnerabilidad ante riesgos climáticos y sísmicos consultado en SIGRID-CENEPRED</div><div class="check-norm">Ley 29664 · Resolución Ministerial 276-2012-PCM</div></div></div>
+        </div>
+      </div>
+
+      <!-- COMPATIBILIDAD DE PLANOS -->
+      <div class="section-group">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-header-left">
+            <span class="section-icon">📐</span>
+            <span class="section-name">Compatibilidad de Planos</span>
+            <span class="section-tag tag-critico">Crítico</span>
+          </div>
+          <div class="section-progress">
+            <div class="progress-mini"><div class="progress-mini-fill" id="prog-planos" style="width:0%"></div></div>
+            <span style="font-size:11px;color:var(--text-muted)" id="cnt-planos">0/3</span>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Planos de planta, perfil longitudinal y secciones transversales firmados por ingeniero responsable</div><div class="check-norm">RNE — Norma G.030 · Colegio de Ingenieros del Perú</div></div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Planos de obras de arte (alcantarillas, badenes, muros) compatibles con diseño hidráulico</div><div class="check-norm">Manual de Diseño Geométrico DG-2018 · Manual de Hidrología MTC</div></div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Identificación y localización de interferencias con redes existentes (eléctricas, agua, telecomunicaciones)</div><div class="check-norm">Directiva N° 001-2019-EF/63.01 Art. 15 · OSINERGMIN</div></div></div>
+        </div>
+      </div>
+
+      <!-- PRESUPUESTO -->
+      <div class="section-group">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-header-left">
+            <span class="section-icon">💰</span>
+            <span class="section-name">Presupuesto y APUs</span>
+            <span class="section-tag tag-alto">Alto</span>
+          </div>
+          <div class="section-progress">
+            <div class="progress-mini"><div class="progress-mini-fill" id="prog-presupuesto" style="width:0%"></div></div>
+            <span style="font-size:11px;color:var(--text-muted)" id="cnt-presupuesto">0/3</span>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">APUs con rendimientos y precios actualizados (no más de 6 meses de antigüedad)</div><div class="check-norm">Directiva N° 001-2019-EF/63.01 Art. 22 · CAPECO</div></div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Gastos generales y utilidades desagregados y sustentados (no porcentaje genérico)</div><div class="check-norm">Directiva N° 001-2019-EF/63.01 · Ley 30225 Art. 28</div></div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Fórmulas polinómicas por especialidad incluidas y verificadas</div><div class="check-norm">D.S. 011-79-VC · Directiva N° 001-2019-EF/63.01</div></div></div>
+        </div>
+      </div>
+
+      <!-- CRONOGRAMA -->
+      <div class="section-group">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-header-left">
+            <span class="section-icon">📅</span>
+            <span class="section-name">Cronograma de Ejecución</span>
+            <span class="section-tag tag-alto">Alto</span>
+          </div>
+          <div class="section-progress">
+            <div class="progress-mini"><div class="progress-mini-fill" id="prog-cronograma" style="width:0%"></div></div>
+            <span style="font-size:11px;color:var(--text-muted)" id="cnt-cronograma">0/2</span>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Diagrama Gantt con hitos, ruta crítica y plazo de ejecución sustentado en rendimientos reales</div><div class="check-norm">Directiva N° 001-2019-EF/63.01 · PMBOK</div></div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Cronograma considera época de lluvias y condiciones climáticas de la zona (para zonas altoandinas)</div><div class="check-norm">SENAMHI — datos históricos · Directiva Invierte.pe</div></div></div>
+        </div>
+      </div>
+
+      <!-- SANEAMIENTO LEGAL -->
+      <div class="section-group">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-header-left">
+            <span class="section-icon">⚖️</span>
+            <span class="section-name">Saneamiento Físico-Legal</span>
+            <span class="section-tag tag-critico">Crítico</span>
+          </div>
+          <div class="section-progress">
+            <div class="progress-mini"><div class="progress-mini-fill" id="prog-legal" style="width:0%"></div></div>
+            <span style="font-size:11px;color:var(--text-muted)" id="cnt-legal">0/2</span>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Disponibilidad legal del terreno acreditada con partida registral SUNARP o resolución de transferencia</div><div class="check-norm">SUNARP · COFOPRI · Ley 29151 (bienes estatales)</div></div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-label"><div class="check-text">Sin ocupantes informales en el área de intervención o plan de gestión social incluido</div><div class="check-norm">Directiva N° 001-2019-EF/63.01 · Ley 30021</div></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANEL DERECHO -->
+    <div class="sidebar-panel">
+      <div class="card">
+        <div class="card-title">📊 Estado del Expediente</div>
+        <div class="score-ring-wrap">
+          <div class="score-ring">
+            <svg width="130" height="130" viewBox="0 0 130 130">
+              <circle cx="65" cy="65" r="54" fill="none" stroke="#EDE8DF" stroke-width="10"/>
+              <circle id="scoreCircle" cx="65" cy="65" r="54" fill="none"
+                stroke="#0D7A5F" stroke-width="10"
+                stroke-dasharray="339.3" stroke-dashoffset="339.3"
+                stroke-linecap="round" style="transition:stroke-dashoffset .5s ease,stroke .3s"/>
+            </svg>
+            <div class="score-ring-val">
+              <div class="score-num" id="scoreNum">0%</div>
+              <div class="score-pct">completitud</div>
+            </div>
+          </div>
+          <div id="semaforoGlobal" style="margin-bottom:16px">
+            <span class="semaforo rojo"><span class="dot"></span>Incompleto</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <div class="obs-list" id="obsList">
+            <div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:12px">
+              Marque los ítems del formulario<br>para ver el estado aquí
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="openInforme()">
+          📄 Generar Informe de Observaciones
+        </button>
+        <div style="height:8px"></div>
+        <button class="btn-secondary" style="width:100%;text-align:center" onclick="alert('📧 Informe enviado a: consultor@ingenieria.pe y jefe.opi@regionpuno.gob.pe')">
+          📧 Enviar por correo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     TAB 2: ASISTENTE NORMATIVO
+═══════════════════════════════ -->
+<div id="tab-asistente" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Asistente <span>Normativo</span></div>
+      <div class="page-subtitle">Consulta requisitos de expedientes técnicos según directivas Invierte.pe, RNE y normas sectoriales</div>
+    </div>
+  </div>
+
+  <div class="asistente-layout">
+    <div>
+      <div class="card" style="padding:16px">
+        <div class="card-title" style="font-size:12px;margin-bottom:12px">💡 Preguntas frecuentes</div>
+        <div class="preguntas-panel" id="preguntasPanel">
+          <button class="pregunta-btn" onclick="hacerPregunta(0,this)">
+            <div class="pregunta-cat">Salud · MINSA</div>
+            <div>¿Qué estudios necesito para una posta médica en zona sísmica?</div>
+          </button>
+          <button class="pregunta-btn" onclick="hacerPregunta(1,this)">
+            <div class="pregunta-cat">Vialidad · MTC</div>
+            <div>¿Cuántas calicatas requiere el estudio de suelos para una vía de 8 km?</div>
+          </button>
+          <button class="pregunta-btn" onclick="hacerPregunta(2,this)">
+            <div class="pregunta-cat">Saneamiento · MVCS</div>
+            <div>¿El presupuesto puede incluir porcentaje genérico de gastos generales?</div>
+          </button>
+          <button class="pregunta-btn" onclick="hacerPregunta(3,this)">
+            <div class="pregunta-cat">Educación · MINEDU</div>
+            <div>¿Qué norma regula el diseño estructural de un colegio en zona de alto riesgo sísmico?</div>
+          </button>
+          <button class="pregunta-btn" onclick="hacerPregunta(4,this)">
+            <div class="pregunta-cat">General · MEF</div>
+            <div>¿Con qué antigüedad máxima pueden estar los precios de los APUs?</div>
+          </button>
+          <button class="pregunta-btn" onclick="hacerPregunta(5,this)">
+            <div class="pregunta-cat">Legal · SUNARP</div>
+            <div>¿Qué documentos acreditan la disponibilidad legal del terreno?</div>
+          </button>
+          <button class="pregunta-btn" onclick="hacerPregunta(6,this)">
+            <div class="pregunta-cat">Observaciones · OPI</div>
+            <div>¿Qué debo hacer si la OPI observa mi expediente técnico?</div>
+          </button>
+          <button class="pregunta-btn" onclick="hacerPregunta(7,this)">
+            <div class="pregunta-cat">Inconsistencias · ET</div>
+            <div>¿Cómo subsano una inconsistencia entre planos y presupuesto?</div>
+          </button>
+          <button class="pregunta-btn" onclick="hacerPregunta(8,this)">
+            <div class="pregunta-cat">Adicionales · Contraloría</div>
+            <div>¿Cuándo un adicional de obra es causal de observación del ET original?</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-panel">
+      <div class="chat-header">
+        <div class="chat-header-icon">📚</div>
+        <div class="chat-header-text">
+          <div class="chat-header-name">Asistente Normativo</div>
+          <div class="chat-header-sub">Fuentes: Directiva 001-2019-EF/63.01 · RNE · Normas sectoriales</div>
+        </div>
+        <div class="chat-status"><div class="chat-status-dot"></div>En línea</div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg bot">
+          <div class="msg-avatar">IA</div>
+          <div class="msg-bubble">
+            Hola, soy el asistente normativo de Expediente Check. Puedo ayudarte a consultar los requisitos de los expedientes técnicos según la <strong>Directiva N° 001-2019-EF/63.01 (Invierte.pe)</strong> y las normas sectoriales vigentes.<br><br>
+            Selecciona una pregunta frecuente o escribe tu consulta directamente.
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <input class="chat-input" id="chatInput" placeholder="Escribe tu consulta normativa aquí..." onkeydown="if(event.key==='Enter')enviarMensaje()">
+        <button class="chat-send" onclick="enviarMensaje()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     TAB 3: MONITOR DE OBRAS
+═══════════════════════════════ -->
+<div id="tab-monitor" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Monitor de <span>Obras en Riesgo</span></div>
+      <div class="page-subtitle">Datos actualizados desde INFOBRAS — Contraloría General · Última sincronización: hoy 06:00 am</div>
+    </div>
+    <button class="btn-primary" style="width:auto" onclick="alert('🔄 Sincronizando con INFOBRAS API...\n\n✅ 47 obras actualizadas')">🔄 Sincronizar INFOBRAS</button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Obras monitoreadas</div>
+      <div class="stat-value">47</div>
+      <div class="stat-sub">GORE Puno · Activas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Alertas rojas</div>
+      <div class="stat-value" style="color:var(--red)">3</div>
+      <div class="stat-sub"><span class="stat-down">▲ 1</span> vs. quincena anterior</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Alertas amarillas</div>
+      <div class="stat-value" style="color:var(--amber)">8</div>
+      <div class="stat-sub"><span class="stat-down">▲ 2</span> vs. quincena anterior</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Monto en riesgo</div>
+      <div class="stat-value" style="font-size:24px">S/ 84M</div>
+      <div class="stat-sub">Obras con alerta activa</div>
+    </div>
+  </div>
+
+  <div class="alert-banner rojo">
+    ⚠️ <div><strong>3 obras con riesgo alto de paralización.</strong> Avance físico muy por debajo del financiero o sin asientos en cuaderno de obra por más de 7 días hábiles. Se recomienda visita de supervisión urgente.</div>
+  </div>
+
+  <div class="monitor-filters">
+    <button class="filter-pill active" onclick="filterObras('todas',this)">Todas (47)</button>
+    <button class="filter-pill" onclick="filterObras('rojo',this)">🔴 Riesgo alto (3)</button>
+    <button class="filter-pill" onclick="filterObras('amarillo',this)">🟡 Riesgo medio (8)</button>
+    <button class="filter-pill" onclick="filterObras('verde',this)">🟢 Sin alerta (36)</button>
+  </div>
+
+  <div class="obras-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Obra / Entidad</th>
+          <th>CUI</th>
+          <th>Monto (S/)</th>
+          <th>Avance Físico</th>
+          <th>Avance Financiero</th>
+          <th>Alertas activas</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="obrasBody">
+        <tr class="obra-row" data-estado="rojo">
+          <td><div class="obra-name">Mejoramiento carretera Puno-Mañazo</div><div class="obra-entidad">GORE Puno · Gerencia de Infraestructura</div></td>
+          <td><div class="obra-cui">2389241</div></td>
+          <td><div class="monto-val">32,450,000</div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill bad" style="width:18%"></div></div><span class="progress-num">18%</span></div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill bad" style="width:47%"></div></div><span class="progress-num">47%</span></div></td>
+          <td><div class="alerta-chips"><span class="alerta-chip rojo">🔴 Avance rezagado</span><span class="alerta-chip rojo">🔴 Sin asientos 12d</span></div></td>
+          <td><span class="semaforo rojo"><span class="dot"></span>Riesgo alto</span></td>
+          <td><button class="detail-btn" onclick="openDetalle(0)">Ver detalle</button></td>
+        </tr>
+        <tr class="obra-row" data-estado="rojo">
+          <td><div class="obra-name">Saneamiento básico integral Ilave</div><div class="obra-entidad">Municipalidad Prov. El Collao · OPI</div></td>
+          <td><div class="obra-cui">2401583</div></td>
+          <td><div class="monto-val">18,720,000</div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill bad" style="width:8%"></div></div><span class="progress-num">8%</span></div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill bad" style="width:35%"></div></div><span class="progress-num">35%</span></div></td>
+          <td><div class="alerta-chips"><span class="alerta-chip rojo">🔴 Avance rezagado</span><span class="alerta-chip amarillo">🟡 Adicionales 9.2%</span></div></td>
+          <td><span class="semaforo rojo"><span class="dot"></span>Riesgo alto</span></td>
+          <td><button class="detail-btn" onclick="openDetalle(1)">Ver detalle</button></td>
+        </tr>
+        <tr class="obra-row" data-estado="rojo">
+          <td><div class="obra-name">Construcción posta médica Capachica</div><div class="obra-entidad">GORE Puno · Red de Salud Puno</div></td>
+          <td><div class="obra-cui">2415890</div></td>
+          <td><div class="monto-val">4,380,000</div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill bad" style="width:0%"></div></div><span class="progress-num">0%</span></div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill bad" style="width:12%"></div></div><span class="progress-num">12%</span></div></td>
+          <td><div class="alerta-chips"><span class="alerta-chip rojo">🔴 Plazo vencido</span><span class="alerta-chip rojo">🔴 Sin inicio físico</span></div></td>
+          <td><span class="semaforo rojo"><span class="dot"></span>Riesgo alto</span></td>
+          <td><button class="detail-btn" onclick="openDetalle(2)">Ver detalle</button></td>
+        </tr>
+        <tr class="obra-row" data-estado="amarillo">
+          <td><div class="obra-name">Mejoramiento IE N° 70548 Juliaca</div><div class="obra-entidad">GORE Puno · UGEL San Román</div></td>
+          <td><div class="obra-cui">2398114</div></td>
+          <td><div class="monto-val">6,150,000</div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill warn" style="width:42%"></div></div><span class="progress-num">42%</span></div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill warn" style="width:58%"></div></div><span class="progress-num">58%</span></div></td>
+          <td><div class="alerta-chips"><span class="alerta-chip amarillo">🟡 Brecha avance 16pp</span></div></td>
+          <td><span class="semaforo amarillo"><span class="dot"></span>Riesgo medio</span></td>
+          <td><button class="detail-btn" onclick="openDetalle(3)">Ver detalle</button></td>
+        </tr>
+        <tr class="obra-row" data-estado="amarillo">
+          <td><div class="obra-name">Rehabilitación puente Desaguadero</div><div class="obra-entidad">GORE Puno · Gerencia Infraestructura</div></td>
+          <td><div class="obra-cui">2421077</div></td>
+          <td><div class="monto-val">11,200,000</div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill warn" style="width:55%"></div></div><span class="progress-num">55%</span></div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill warn" style="width:71%"></div></div><span class="progress-num">71%</span></div></td>
+          <td><div class="alerta-chips"><span class="alerta-chip amarillo">🟡 Adicionales 11.4%</span><span class="alerta-chip amarillo">🟡 Alerta lluvia SENAMHI</span></div></td>
+          <td><span class="semaforo amarillo"><span class="dot"></span>Riesgo medio</span></td>
+          <td><button class="detail-btn" onclick="openDetalle(3)">Ver detalle</button></td>
+        </tr>
+        <tr class="obra-row" data-estado="verde">
+          <td><div class="obra-name">Construcción mercado central Azángaro</div><div class="obra-entidad">Municipalidad Prov. Azángaro · OPI</div></td>
+          <td><div class="obra-cui">2378950</div></td>
+          <td><div class="monto-val">8,640,000</div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill ok" style="width:78%"></div></div><span class="progress-num">78%</span></div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill ok" style="width:75%"></div></div><span class="progress-num">75%</span></div></td>
+          <td><div class="alerta-chips"><span class="alerta-chip verde">🟢 Sin alertas</span></div></td>
+          <td><span class="semaforo verde"><span class="dot"></span>Normal</span></td>
+          <td><button class="detail-btn" onclick="openDetalle(3)">Ver detalle</button></td>
+        </tr>
+        <tr class="obra-row" data-estado="verde">
+          <td><div class="obra-name">Ampliación red agua potable Yunguyo</div><div class="obra-entidad">Municipalidad Prov. Yunguyo · UEI</div></td>
+          <td><div class="obra-cui">2411305</div></td>
+          <td><div class="monto-val">3,920,000</div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill ok" style="width:91%"></div></div><span class="progress-num">91%</span></div></td>
+          <td><div class="progress-bar-wrap"><div class="progress-bar"><div class="progress-fill ok" style="width:88%"></div></div><span class="progress-num">88%</span></div></td>
+          <td><div class="alerta-chips"><span class="alerta-chip verde">🟢 Sin alertas</span></div></td>
+          <td><span class="semaforo verde"><span class="dot"></span>Normal</span></td>
+          <td><button class="detail-btn" onclick="openDetalle(3)">Ver detalle</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════ MODAL: DETALLE OBRA ═══════ -->
+<div class="modal-overlay" id="modalDetalle">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalDetalle')">✕ Cerrar</button>
+    <div class="modal-title" id="detalleTitle">Mejoramiento carretera Puno-Mañazo</div>
+    <div class="modal-sub" id="detalleSubtitle">CUI 2389241 · GORE Puno · Vialidad</div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Información general</div>
+      <div class="modal-row"><span class="modal-row-label">Contratista</span><span class="modal-row-val" id="detalleContratista">Consorcio Vial Altiplano S.A.C.</span></div>
+      <div class="modal-row"><span class="modal-row-label">Supervisor</span><span class="modal-row-val">Ing. Roberto Flores Quispe</span></div>
+      <div class="modal-row"><span class="modal-row-label">Inicio contractual</span><span class="modal-row-val" id="detalleInicio">15 mayo 2024</span></div>
+      <div class="modal-row"><span class="modal-row-label">Fin contractual</span><span class="modal-row-val" id="detalleFin">14 noviembre 2024</span></div>
+      <div class="modal-row"><span class="modal-row-label">Monto contractual</span><span class="modal-row-val" id="detalleMonto">S/ 32,450,000</span></div>
+      <div class="modal-row"><span class="modal-row-label">Adicionales aprobados</span><span class="modal-row-val" id="detalleAdicionales">S/ 0 (0%)</span></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">⚠️ Alertas activas y causa probable en el ET</div>
+      <table class="obs-table" style="margin-top:4px">
+        <thead><tr><th>Alerta</th><th>Valor actual</th><th>Causa probable en el ET original</th></tr></thead>
+        <tbody id="detalleAlertas"></tbody>
+      </table>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn-primary" onclick="alert('📋 Notificación enviada al supervisor y al responsable de la UEI')">📋 Notificar supervisor</button>
+      <button class="btn-secondary" onclick="closeModal('modalDetalle')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MODAL: INFORME PDF ═══════ -->
+<div class="modal-overlay" id="modalInforme">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalInforme')">✕ Cerrar</button>
+    <div class="informe-header">
+      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:6px;font-family:'DM Mono',monospace">INSTITUTO DE ESTUDIOS PERUANOS · SISTEMA ET</div>
+      <div class="informe-title">Informe de Revisión de <strong>Expediente Técnico</strong></div>
+      <div class="informe-meta">Mejoramiento vía de acceso a comunidades de Ácora · CUI 2451872 · Generado: <span id="fechaInforme"></span></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Resultado de la revisión</div>
+      <div style="display:flex;gap:16px;align-items:center;margin-bottom:12px">
+        <div id="informeSemaforo"></div>
+        <div style="font-size:13px;color:var(--text-muted)" id="informeResumen"></div>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Observaciones por subsanar</div>
+      <table class="obs-table">
+        <thead><tr><th>N°</th><th>Ítem</th><th>Categoría</th><th>Norma de referencia</th></tr></thead>
+        <tbody id="informeObs"></tbody>
+      </table>
+      <div id="informeNoObs" style="display:none;text-align:center;padding:16px;color:var(--green);font-size:13px">✅ No se encontraron observaciones. El expediente técnico cumple con todos los requisitos verificados.</div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn-primary" onclick="alert('📥 Informe descargado como PDF\n\nInforme_ET_CUI2451872_'+new Date().toLocaleDateString()+'.pdf')">📥 Descargar PDF</button>
+      <button class="btn-secondary" onclick="alert('📧 Informe enviado a: consultor@ingenieria.pe')">📧 Enviar al consultor</button>
+      <button class="btn-secondary" onclick="closeModal('modalInforme')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── TAB NAVIGATION ──
+function showTab(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── CHECKLIST LOGIC ──
+const sections = {
+  estudios: { total: 4 },
+  planos: { total: 3 },
+  presupuesto: { total: 3 },
+  cronograma: { total: 2 },
+  legal: { total: 2 },
+};
+
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  body.style.display = body.style.display === 'none' ? '' : '';
+}
+
+function toggleCheck(item) {
+  const cb = item.querySelector('input[type=checkbox]');
+  cb.checked = !cb.checked;
+  item.classList.toggle('checked', cb.checked);
+  updateScore();
+}
+
+function updateScore() {
+  const allItems = document.querySelectorAll('.check-item');
+  const total = allItems.length; // 14
+  let checked = 0;
+
+  // per-section counts
+  const sectionMap = {
+    estudios: {el: document.querySelector('.section-group:nth-child(1)'), count: 0, total: 4},
+    planos:   {el: document.querySelector('.section-group:nth-child(2)'), count: 0, total: 3},
+    presupuesto:{el: document.querySelector('.section-group:nth-child(3)'), count: 0, total: 3},
+    cronograma: {el: document.querySelector('.section-group:nth-child(4)'), count: 0, total: 2},
+    legal:    {el: document.querySelector('.section-group:nth-child(5)'), count: 0, total: 2},
+  };
+  const sectionKeys = Object.keys(sectionMap);
+
+  allItems.forEach((item, i) => {
+    const cb = item.querySelector('input');
+    const si = i < 4 ? 0 : i < 7 ? 1 : i < 10 ? 2 : i < 12 ? 3 : 4;
+    if (cb.checked) {
+      checked++;
+      sectionMap[sectionKeys[si]].count++;
+    }
+  });
+
+  sectionKeys.forEach((key, i) => {
+    const s = sectionMap[key];
+    const pct = Math.round(s.count / s.total * 100);
+    document.getElementById('prog-'+key).style.width = pct+'%';
+    document.getElementById('cnt-'+key).textContent = s.count+'/'+s.total;
+  });
+
+  const pct = Math.round(checked / total * 100);
+  document.getElementById('scoreNum').textContent = pct+'%';
+
+  // ring
+  const circumference = 339.3;
+  const offset = circumference - (pct / 100 * circumference);
+  const circle = document.getElementById('scoreCircle');
+  circle.style.strokeDashoffset = offset;
+  circle.style.stroke = pct >= 80 ? '#0D7A5F' : pct >= 50 ? '#B45309' : '#B91C1C';
+
+  // semaforo
+  const sg = document.getElementById('semaforoGlobal');
+  if (pct >= 85) sg.innerHTML = '<span class="semaforo verde"><span class="dot"></span>Aprobado</span>';
+  else if (pct >= 50) sg.innerHTML = '<span class="semaforo amarillo"><span class="dot"></span>Con observaciones</span>';
+  else sg.innerHTML = '<span class="semaforo rojo"><span class="dot"></span>Incompleto</span>';
+
+  // obs list
+  buildObsList();
+}
+
+function buildObsList() {
+  const items = document.querySelectorAll('.check-item');
+  const obsData = [
+    {text:'Estudio de mecánica de suelos',norm:'NTP E.050',cat:'critico'},
+    {text:'Estudio hidrológico e hidráulico',norm:'Manual Hidrología MTC',cat:'critico'},
+    {text:'Levantamiento topográfico de campo',norm:'DG-2018 MTC',cat:'critico'},
+    {text:'Análisis de vulnerabilidad climática',norm:'RM 276-2012-PCM',cat:'alto'},
+    {text:'Planos de planta y perfil firmados',norm:'RNE G.030',cat:'critico'},
+    {text:'Planos de obras de arte',norm:'Manual Hidrología MTC',cat:'critico'},
+    {text:'Identificación de interferencias',norm:'Directiva 001-2019-EF Art.15',cat:'alto'},
+    {text:'APUs con precios actualizados',norm:'Directiva 001-2019-EF Art.22',cat:'alto'},
+    {text:'Gastos generales desagregados',norm:'Ley 30225 Art.28',cat:'alto'},
+    {text:'Fórmulas polinómicas incluidas',norm:'D.S. 011-79-VC',cat:'alto'},
+    {text:'Cronograma con ruta crítica',norm:'Directiva 001-2019-EF',cat:'alto'},
+    {text:'Cronograma considera época de lluvias',norm:'SENAMHI / Directiva',cat:'alto'},
+    {text:'Disponibilidad legal del terreno',norm:'SUNARP / Ley 29151',cat:'critico'},
+    {text:'Sin ocupantes informales',norm:'Directiva 001-2019-EF',cat:'alto'},
+  ];
+
+  const list = document.getElementById('obsList');
+  const pending = [];
+  items.forEach((item, i) => {
+    if (!item.querySelector('input').checked) pending.push(obsData[i]);
+  });
+
+  if (pending.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--green);font-size:12px">✅ Sin observaciones pendientes</div>';
+    return;
+  }
+
+  list.innerHTML = pending.map(o => `
+    <div class="obs-item obs-${o.cat}">
+      <div class="obs-dot"></div>
+      <div><div class="obs-text">${o.text}</div><div class="obs-norm">${o.norm}</div></div>
+    </div>
+  `).join('');
+}
+
+function resetChecklist() {
+  document.querySelectorAll('.check-item input').forEach(cb => { cb.checked = false; cb.closest('.check-item').classList.remove('checked'); });
+  updateScore();
+}
+
+// ── INFORME MODAL ──
+function openInforme() {
+  const items = document.querySelectorAll('.check-item');
+  const obsData = [
+    {text:'Estudio de mecánica de suelos con calicatas suficientes',norm:'NTP E.050 · Manual MTC',cat:'CRÍTICO'},
+    {text:'Estudio hidrológico e hidráulico',norm:'Manual de Hidrología MTC · ANA 154-2016',cat:'CRÍTICO'},
+    {text:'Levantamiento topográfico verificado en campo',norm:'Manual DG-2018 (MTC)',cat:'CRÍTICO'},
+    {text:'Análisis de vulnerabilidad climática (SIGRID-CENEPRED)',norm:'Ley 29664 · RM 276-2012-PCM',cat:'ALTO'},
+    {text:'Planos firmados por ingeniero responsable',norm:'RNE G.030 · Colegio de Ingenieros',cat:'CRÍTICO'},
+    {text:'Planos de obras de arte compatibles',norm:'DG-2018 · Manual de Hidrología MTC',cat:'CRÍTICO'},
+    {text:'Identificación de interferencias existentes',norm:'Directiva 001-2019-EF/63.01 Art.15',cat:'ALTO'},
+    {text:'APUs con precios actualizados (≤6 meses)',norm:'Directiva 001-2019-EF/63.01 Art.22',cat:'ALTO'},
+    {text:'Gastos generales desagregados y sustentados',norm:'Ley 30225 Art.28 · Directiva MEF',cat:'ALTO'},
+    {text:'Fórmulas polinómicas por especialidad',norm:'D.S. 011-79-VC',cat:'ALTO'},
+    {text:'Cronograma con hitos y ruta crítica',norm:'Directiva 001-2019-EF/63.01',cat:'ALTO'},
+    {text:'Cronograma considera época de lluvias (zona altoandina)',norm:'SENAMHI / Directiva Invierte.pe',cat:'ALTO'},
+    {text:'Disponibilidad legal del terreno acreditada (SUNARP)',norm:'SUNARP · COFOPRI · Ley 29151',cat:'CRÍTICO'},
+    {text:'Sin ocupantes informales en el área de intervención',norm:'Directiva 001-2019-EF/63.01 · Ley 30021',cat:'ALTO'},
+  ];
+
+  const pending = [];
+  items.forEach((item, i) => { if (!item.querySelector('input').checked) pending.push({...obsData[i], num: i+1}); });
+
+  document.getElementById('fechaInforme').textContent = new Date().toLocaleString('es-PE');
+
+  const total = 14;
+  const done = total - pending.length;
+  const pct = Math.round(done/total*100);
+
+  let semHtml = '';
+  if (pct >= 85) semHtml = '<span class="semaforo verde"><span class="dot"></span>APROBADO</span>';
+  else if (pct >= 50) semHtml = '<span class="semaforo amarillo"><span class="dot"></span>APROBADO CON OBSERVACIONES</span>';
+  else semHtml = '<span class="semaforo rojo"><span class="dot"></span>NO APROBADO — SUBSANAR OBSERVACIONES</span>';
+
+  document.getElementById('informeSemaforo').innerHTML = semHtml;
+  document.getElementById('informeResumen').textContent = `${done} de ${total} ítems verificados (${pct}%). ${pending.length > 0 ? pending.length + ' observación(es) requieren subsanación antes de la aprobación.' : 'El expediente cumple todos los requisitos revisados.'}`;
+
+  const tbody = document.getElementById('informeObs');
+  const noObs = document.getElementById('informeNoObs');
+  if (pending.length === 0) {
+    tbody.innerHTML = '';
+    noObs.style.display = '';
+  } else {
+    noObs.style.display = 'none';
+    tbody.innerHTML = pending.map((o,i) => `
+      <tr>
+        <td style="font-weight:600;color:var(--navy)">${i+1}</td>
+        <td>${o.text}</td>
+        <td><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:${o.cat==='CRÍTICO'?'var(--red-light)':'var(--amber-light)'};color:${o.cat==='CRÍTICO'?'var(--red)':'var(--amber)'}">${o.cat}</span></td>
+        <td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted)">${o.norm}</td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('modalInforme').classList.add('open');
+}
+
+// ── CHAT ASISTENTE ──
+const preguntas = [
+  "¿Qué estudios necesito para una posta médica en zona sísmica?",
+  "¿Cuántas calicatas requiere el estudio de suelos para una vía de 8 km?",
+  "¿El presupuesto puede incluir porcentaje genérico de gastos generales?",
+  "¿Qué norma regula el diseño estructural de un colegio en zona de alto riesgo sísmico?",
+  "¿Con qué antigüedad máxima pueden estar los precios de los APUs?",
+  "¿Qué documentos acreditan la disponibilidad legal del terreno?"
+];
+
+const respuestas = [
+  `Para una posta médica en zona sísmica, el expediente técnico debe incluir los siguientes estudios según la <strong>Norma Técnica de Salud N° 113-MINSA/DGIEM-V.01</strong> y el Reglamento Nacional de Edificaciones:<br><br>
+  <strong>1. Estudios de sitio obligatorios:</strong><br>
+  — Estudio de mecánica de suelos con 3 calicatas mínimo para el área de cimentación <span class="norm-chip">NTP E.050</span><br>
+  — Análisis de peligro sísmico según zona (Puno = Zona 3) <span class="norm-chip">NTE E.030</span><br>
+  — Microzonificación sísmica si el suelo presenta clasificación S2 o S3 <span class="norm-chip">NTE E.030 Art. 32</span><br><br>
+  <strong>2. Norma sectorial de infraestructura:</strong><br>
+  — El diseño estructural debe cumplir la <strong>NTS N° 113-MINSA/DGIEM</strong>, que establece categoría de uso A2 (hospitales) para postas médicas CLAS, con factor de uso U=1.50. <span class="norm-chip">NTE E.030</span><br><br>
+  <strong>3. Compatibilidad:</strong><br>
+  — Planos de arquitectura, estructuras, instalaciones sanitarias y eléctricas deben estar coordinados entre sí y firmados por los especialistas respectivos. <span class="norm-chip">RNE G.030</span>`,
+
+  `Según el <strong>Manual de Ensayos de Materiales del MTC</strong> y la norma <strong>NTP E.050</strong>, el número de calicatas para una vía de 8 km depende del tipo de proyecto:<br><br>
+  <strong>Para carreteras de bajo volumen de tránsito (IMD ≤ 200 veh/día):</strong><br>
+  — Mínimo <strong>1 calicata cada 500 metros</strong> = <strong>16 calicatas</strong> para 8 km <span class="norm-chip">MTC EM 2016 Sección 100</span><br><br>
+  <strong>Para carreteras de mayor volumen (IMD > 200 veh/día):</strong><br>
+  — Mínimo <strong>1 calicata cada 250 metros</strong> = 32 calicatas para 8 km <span class="norm-chip">Manual de Suelos MTC 2014</span><br><br>
+  <strong>⚠️ Observación frecuente:</strong> En zonas altoandinas como Puno, se recomienda aumentar la densidad en tramos con cambio de litología visible o suelos orgánicos (bofedales). Un estudio con menos calicatas que el mínimo normativo es causal directa de rechazo del ET por la OPI.`,
+
+  `<strong>No.</strong> El uso de porcentaje genérico de gastos generales sin sustentación es una de las observaciones más frecuentes en la revisión de ETs y puede causar el rechazo del expediente.<br><br>
+  Según el <strong>Artículo 22 de la Directiva N° 001-2019-EF/63.01 (Invierte.pe)</strong> y la <strong>Ley N° 30225 (Ley de Contrataciones, Art. 28)</strong>:<br><br>
+  — Los gastos generales deben estar <strong>desagregados por componente</strong>: gastos de personal técnico-administrativo, alquileres, seguros, equipamiento de oficina, gastos financieros, etc.<br>
+  — Cada ítem debe tener su <strong>unidad, cantidad, precio unitario y subtotal</strong>.<br>
+  — No se admite un porcentaje único como "10% del costo directo" sin la planilla de detalle. <span class="norm-chip">Directiva 001-2019-EF Art.22</span><br><br>
+  <strong>Consecuencia si no se subsana:</strong> El contratista puede presentar una oferta anormalmente baja que no cubra sus costos reales, generando abandono de obra o solicitudes de adicionales por desequilibrio económico.`,
+
+  `El diseño estructural de un colegio en zona de alto riesgo sísmico está regulado principalmente por:<br><br>
+  <strong>1. Norma Técnica de Edificación E.030 — Diseño Sismorresistente</strong> <span class="norm-chip">NTE E.030 DS 003-2016-VIVIENDA</span><br>
+  — Categoría de uso: <strong>A1</strong> (Edificaciones esenciales) para colegios con más de 500 alumnos; <strong>A2</strong> para colegios menores.<br>
+  — Factor de uso: U = 1.50 (A1) o U = 1.30 (A2).<br>
+  — En Puno (zona altiplánica): <strong>Zona sísmica 3</strong>, Z = 0.35g.<br><br>
+  <strong>2. Norma Técnica de Infraestructura para Locales de Educación Básica — MINEDU 2023</strong><br>
+  — Establece requisitos específicos de modulación, altura de entrepiso, materiales y sistema estructural para locales educativos.<br>
+  — Obligatoria para todos los ETs de infraestructura educativa financiados con recursos públicos. <span class="norm-chip">RM 188-2023-MINEDU</span><br><br>
+  <strong>⚠️ Error frecuente:</strong> Diseñar con la norma E.030 anterior (2003) en lugar de la versión vigente 2016, que aumentó significativamente los requerimientos sísmicos para la zona sur del Perú.`,
+
+  `Según el <strong>Artículo 22 de la Directiva N° 001-2019-EF/63.01 de Invierte.pe</strong>, los precios unitarios de los APUs (Análisis de Precios Unitarios) deben tener una antigüedad máxima de <strong>6 meses</strong> respecto a la fecha de elaboración del expediente técnico.<br><br>
+  <strong>Esto implica:</strong><br>
+  — Los precios de mano de obra deben corresponder a la tabla vigente de la <strong>CAPECO o sindicato de construcción civil</strong> del año en curso. <span class="norm-chip">Directiva 001-2019-EF Art.22</span><br>
+  — Los precios de materiales deben tener respaldo documental (cotizaciones, facturas de referencia, índices INEI).<br>
+  — Los costos de equipos deben reflejar tarifas actuales de alquiler en el mercado local.<br><br>
+  <strong>⚠️ Consecuencia:</strong> APUs con precios desactualizados generan presupuestos subvaluados, que a su vez producen ofertas anormalmente bajas en la licitación y, posteriormente, solicitudes de adicionales por desequilibrio económico del contrato.`,
+
+  `Según la <strong>Directiva N° 001-2019-EF/63.01 (Invierte.pe)</strong> y la <strong>Ley N° 29151 (Ley General del Sistema Nacional de Bienes Estatales)</strong>, los documentos que acreditan la disponibilidad legal del terreno son:<br><br>
+  <strong>Para predios de propiedad estatal:</strong><br>
+  — Partida registral SUNARP a nombre de la entidad ejecutora o del sector correspondiente. <span class="norm-chip">SUNARP</span><br>
+  — Resolución de transferencia, afectación en uso o acto de adquisición inscrito en Registros Públicos.<br><br>
+  <strong>Para predios de propiedad municipal o regional:</strong><br>
+  — Acuerdo de Concejo o Resolución Regional de transferencia del terreno al sector ejecutor.<br>
+  — Partida registral actualizada (no mayor a 30 días al momento de presentación del ET). <span class="norm-chip">Ley 29151 Art. 14</span><br><br>
+  <strong>⚠️ Lo que NO es suficiente:</strong><br>
+  — Documentos de posesión sin inscripción registral.<br>
+  — Actas comunales sin respaldo legal formal.<br>
+  — Partidas registrales a nombre de terceros con "acuerdo verbal" de cesión.`,
+
+  `<strong>Cuando la OPI observa tu expediente técnico</strong>, el proceso a seguir está regulado por la <strong>Directiva N° 001-2019-EF/63.01 (Invierte.pe)</strong>:<br><br>
+  <strong>1. Revisa el informe de observaciones:</strong><br>
+  — Identifica si cada observación cita la norma específica incumplida. Si no la cita, puedes solicitar aclaración. <span class="norm-chip">Directiva 001-2019-EF Art. 27</span><br>
+  — Clasifica las observaciones en: subsanables (documentación incompleta, errores de cálculo, planos sin firma) y no subsanables (estudios insuficientes, incompatibilidades estructurales graves).<br><br>
+  <strong>2. Plazo para subsanar:</strong><br>
+  — La UEI tiene generalmente <strong>15 a 30 días hábiles</strong> para presentar el ET corregido.<br>
+  — Si vence el plazo sin subsanación, la OPI puede rechazar el ET y debes reiniciar el proceso. <span class="norm-chip">Directiva 001-2019-EF Art. 29</span><br><br>
+  <strong>3. Cómo responder cada observación:</strong><br>
+  — Elabora un <strong>cuadro de atención de observaciones</strong>: columna 1 = observación OPI, columna 2 = acción correctiva, columna 3 = folio del ET corregido.<br>
+  — Adjunta el sustento documental de cada corrección (nueva cotización, nuevo plano firmado, nueva memoria de cálculo).<br><br>
+  <strong>⚠️ Error frecuente:</strong> Responder sin el cuadro de atención o sin identificar el folio exacto de corrección — la OPI puede devolver el ET por forma, sin revisarlo de fondo.`,
+
+  `Una inconsistencia entre planos y presupuesto es una de las observaciones más comunes y puede tener consecuencias graves durante la ejecución. Según la <strong>Directiva N° 001-2019-EF/63.01</strong>:<br><br>
+  <strong>1. Tipos de inconsistencia y cómo corregirlas:</strong><br>
+  — <strong>Metrados:</strong> La cantidad en el presupuesto no coincide con los planos. Corrección: recalcular con planilla de cálculo detallada. <span class="norm-chip">Directiva 001-2019-EF Art. 22</span><br>
+  — <strong>Especificaciones técnicas:</strong> El plano indica un material y las EETT indican otro. Corrección: alinear ambos documentos con nueva versión firmada por el especialista.<br>
+  — <strong>Presupuesto vs. memoria descriptiva:</strong> El alcance descrito no coincide con las partidas. Corrección: revisar alcance y ajustar.<br><br>
+  <strong>2. Quién debe firmar la corrección:</strong><br>
+  — Toda corrección de planos requiere nueva firma del profesional responsable de esa especialidad. <span class="norm-chip">RNE G.030</span><br>
+  — El proyectista debe emitir una <strong>fe de erratas</strong> o <strong>addendum</strong> al ET original, registrado en el Banco de Inversiones.<br><br>
+  <strong>⚠️ Consecuencia si no se corrige:</strong> Durante la ejecución genera una consulta al proyectista que, si no se resuelve, paraliza la obra y puede derivar en adicional — exactamente lo que el ET debería haber prevenido.`,
+
+  `Un adicional revela una deficiencia del ET original cuando su causa raíz es una omisión o error preexistente. Según la <strong>Ley N° 30225, Art. 34</strong> y la <strong>Directiva N° 001-2019-EF/63.01</strong>:<br><br>
+  <strong>Causales de adicional que evidencian falla del ET:</strong><br>
+  — Estudio de suelos insuficiente: suelos distintos a los esperados obligan a cambiar la cimentación. <span class="norm-chip">NTP E.050</span><br>
+  — Interferencias no identificadas: redes de agua, desagüe o electricidad no mapeadas. <span class="norm-chip">Directiva 001-2019-EF Art. 15</span><br>
+  — Metrados incorrectos: las cantidades reales superan significativamente el presupuesto.<br>
+  — Incompatibilidad entre especialidades: diseño estructural no coordina con instalaciones.<br><br>
+  <strong>Límites y consecuencias:</strong><br>
+  — Hasta el <strong>15% del contrato</strong>: lo aprueba la entidad directamente. <span class="norm-chip">Ley 30225 Art. 34.3</span><br>
+  — Entre <strong>15% y 50%</strong>: requiere autorización previa de la <strong>Contraloría General</strong>.<br>
+  — Más del <strong>50%</strong>: puede ser causal de resolución de contrato.<br><br>
+  <strong>⚠️ Implicancia para el ET:</strong> Si la Contraloría identifica que el adicional se originó en una deficiencia previsible del ET, puede iniciar un proceso de control posterior al proyectista y a los funcionarios que aprobaron el expediente.`
+];
+
+function hacerPregunta(idx, btn) {
+  document.querySelectorAll('.pregunta-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const messages = document.getElementById('chatMessages');
+
+  // user msg
+  const userMsg = document.createElement('div');
+  userMsg.className = 'msg user';
+  userMsg.innerHTML = `<div class="msg-avatar">MR</div><div class="msg-bubble">${preguntas[idx]}</div>`;
+  messages.appendChild(userMsg);
+  messages.scrollTop = messages.scrollHeight;
+
+  // typing indicator
+  const typing = document.createElement('div');
+  typing.className = 'msg bot';
+  typing.innerHTML = `<div class="msg-avatar">IA</div><div class="msg-bubble" style="color:var(--text-muted);font-style:italic">Consultando normativa...</div>`;
+  messages.appendChild(typing);
+  messages.scrollTop = messages.scrollHeight;
+
+  setTimeout(() => {
+    typing.remove();
+    const botMsg = document.createElement('div');
+    botMsg.className = 'msg bot';
+    botMsg.innerHTML = `<div class="msg-avatar">IA</div><div class="msg-bubble">${respuestas[idx]}</div>`;
+    messages.appendChild(botMsg);
+    messages.scrollTop = messages.scrollHeight;
+  }, 1100);
+}
+
+function enviarMensaje() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const messages = document.getElementById('chatMessages');
+  const userMsg = document.createElement('div');
+  userMsg.className = 'msg user';
+  userMsg.innerHTML = `<div class="msg-avatar">MR</div><div class="msg-bubble">${text}</div>`;
+  messages.appendChild(userMsg);
+  input.value = '';
+  messages.scrollTop = messages.scrollHeight;
+
+  const typing = document.createElement('div');
+  typing.className = 'msg bot';
+  typing.innerHTML = `<div class="msg-avatar">IA</div><div class="msg-bubble" style="color:var(--text-muted);font-style:italic">Consultando normativa...</div>`;
+  messages.appendChild(typing);
+  messages.scrollTop = messages.scrollHeight;
+
+  setTimeout(() => {
+    typing.remove();
+    const botMsg = document.createElement('div');
+    botMsg.className = 'msg bot';
+    botMsg.innerHTML = `<div class="msg-avatar">IA</div><div class="msg-bubble">Para responder con precisión a tu consulta sobre <strong>"${text}"</strong>, el asistente normativo consultaría las directivas MEF, manuales MTC y normas sectoriales del corpus normativo indexado. <br><br><em style="color:var(--text-muted);font-size:12px">📌 Versión demo — en producción, el asistente responde en tiempo real citando la norma exacta aplicable.</em></div>`;
+    messages.appendChild(botMsg);
+    messages.scrollTop = messages.scrollHeight;
+  }, 1200);
+}
+
+// ── MONITOR ──
+function filterObras(estado, btn) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.obra-row').forEach(row => {
+    row.style.display = (estado === 'todas' || row.dataset.estado === estado) ? '' : 'none';
+  });
+}
+
+const detalles = [
+  {
+    title: 'Mejoramiento carretera Puno-Mañazo',
+    sub: 'CUI 2389241 · GORE Puno · Vialidad',
+    contratista: 'Consorcio Vial Altiplano S.A.C.',
+    inicio: '15 mayo 2024', fin: '14 noviembre 2024',
+    monto: 'S/ 32,450,000', adicionales: 'S/ 0 (0%)',
+    alertas: [
+      ['🔴 Avance físico 18% vs. financiero 47%', 'Brecha de 29 puntos porcentuales en 2 valorizaciones consecutivas', 'Probable estudio de suelos deficiente — metrados de movimiento de tierra subestimados (zona altiplánica con material variable)'],
+      ['🔴 Sin asientos en cuaderno de obra (12 días hábiles)', '12 días sin asiento del contratista ni del supervisor', 'Posible paralización encubierta. Cronograma sin considerar época de lluvias (junio-agosto en Puno).'],
+    ]
+  },
+  {
+    title: 'Saneamiento básico integral Ilave',
+    sub: 'CUI 2401583 · Municipalidad Prov. El Collao · Saneamiento',
+    contratista: 'Ingeniería y Construcción del Sur E.I.R.L.',
+    inicio: '10 marzo 2024', fin: '09 septiembre 2024',
+    monto: 'S/ 18,720,000', adicionales: 'S/ 1,722,240 (9.2%)',
+    alertas: [
+      ['🔴 Avance físico 8% vs. financiero 35%', 'Brecha de 27 puntos porcentuales', 'Probable catastro de redes inexistente o incompatible con condiciones de campo. Error en metrados de excavación en suelos con nivel freático alto.'],
+      ['🟡 Adicionales acumulados: 9.2% del monto contractual', 'S/ 1,722,240 en adicionales aprobados — cerca del límite del 10%', 'APUs con precios de mano de obra desactualizados en el ET original. Presupuesto subvaluado.'],
+    ]
+  },
+  {
+    title: 'Construcción posta médica Capachica',
+    sub: 'CUI 2415890 · GORE Puno · Red de Salud',
+    contratista: 'Construandes Puno S.A.C.',
+    inicio: '01 febrero 2024', fin: '31 julio 2024',
+    monto: 'S/ 4,380,000', adicionales: 'S/ 0 (0%)',
+    alertas: [
+      ['🔴 Plazo contractual vencido sin acta de recepción', 'Obra con fecha fin 31/07/2024 — sin recepción ni ampliación formal', 'Probable saneamiento físico-legal del terreno no resuelto al momento de elaboración del ET. Posible conflicto con comunidad local.'],
+      ['🔴 Avance físico 0% con 12% de avance financiero', 'Se han realizado pagos (adelanto + gastos generales) sin inicio físico de obra', 'El ET fue aprobado sin verificar disponibilidad real del terreno (SUNARP / acuerdo comunal).'],
+    ]
+  },
+  {
+    title: 'Mejoramiento IE N° 70548 Juliaca',
+    sub: 'CUI 2398114 · GORE Puno · UGEL San Román · Educación',
+    contratista: 'Edificaciones Modernas del Altiplano S.A.C.',
+    inicio: '20 enero 2024', fin: '18 julio 2024',
+    monto: 'S/ 6,150,000', adicionales: 'S/ 0 (0%)',
+    alertas: [
+      ['🟡 Avance físico 42% vs. financiero 58%', 'Brecha de 16 puntos porcentuales — monitoreo preventivo', 'Probable metrado de movimiento de tierras subestimado. Cronograma sin holgura para contingencias.'],
+    ]
+  }
+];
+
+function openDetalle(idx) {
+  const d = detalles[idx];
+  document.getElementById('detalleTitle').textContent = d.title;
+  document.getElementById('detalleSubtitle').textContent = d.sub;
+  document.getElementById('detalleContratista').textContent = d.contratista;
+  document.getElementById('detalleInicio').textContent = d.inicio;
+  document.getElementById('detalleFin').textContent = d.fin;
+  document.getElementById('detalleMonto').textContent = d.monto;
+  document.getElementById('detalleAdicionales').textContent = d.adicionales;
+  document.getElementById('detalleAlertas').innerHTML = d.alertas.map(a => `
+    <tr>
+      <td>${a[0]}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px">${a[1]}</td>
+      <td style="font-size:11px;color:var(--amber)">${a[2]}</td>
+    </tr>
+  `).join('');
+  document.getElementById('modalDetalle').classList.add('open');
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+// ── UPLOAD SCREEN LOGIC ──
+function handleFileUpload(file) {
+  if (!file) return;
+  startAnalysis(file.name, (file.size/1024/1024).toFixed(1)+' MB');
+}
+
+function simulateUpload() {
+  startAnalysis('ET_Mejoramiento_Via_Acora.pdf', '4.2 MB');
+}
+
+function skipToApp() {
+  document.getElementById('uploadScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+}
+
+function startAnalysis(name, size) {
+  document.getElementById('dropZone').style.display = 'none';
+  document.getElementById('uploadProgress').classList.add('show');
+  document.getElementById('uploadFileName').textContent = name;
+  document.getElementById('uploadFileSize').textContent = size + ' · Expediente Técnico';
+
+  const steps = ['step1','step2','step3','step4','step5'];
+  const durations = [600, 900, 1200, 1000, 800];
+  let pct = 0;
+  let stepIdx = 0;
+  let total = durations.reduce((a,b)=>a+b,0);
+  let elapsed = 0;
+
+  function runStep(i) {
+    if (i >= steps.length) {
+      // done
+      document.getElementById('progressFill').style.width = '100%';
+      document.getElementById('progressPct').textContent = '100%';
+      document.getElementById(steps[i-1]).classList.remove('active');
+      document.getElementById(steps[i-1]).classList.add('done');
+      document.getElementById(steps[i-1]).querySelector('.step-dot').textContent = '✓';
+      setTimeout(() => {
+        // pre-check items based on "AI analysis"
+        document.getElementById('uploadScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+        document.getElementById('uploadedFileName').textContent = '📎 ' + name;
+        preCheckItems();
+      }, 600);
+      return;
+    }
+    if (i > 0) {
+      document.getElementById(steps[i-1]).classList.remove('active');
+      document.getElementById(steps[i-1]).classList.add('done');
+      document.getElementById(steps[i-1]).querySelector('.step-dot').textContent = '✓';
+    }
+    document.getElementById(steps[i]).classList.add('active');
+
+    elapsed += durations[i];
+    const targetPct = Math.round(elapsed / total * 100);
+
+    // animate pct
+    const start = pct;
+    const end = targetPct;
+    const dur = durations[i];
+    const startTime = performance.now();
+    function animPct(now) {
+      const t = Math.min((now - startTime) / dur, 1);
+      const cur = Math.round(start + (end-start)*t);
+      document.getElementById('progressFill').style.width = cur+'%';
+      document.getElementById('progressPct').textContent = cur+'%';
+      if (t < 1) requestAnimationFrame(animPct);
+      else { pct = end; setTimeout(() => runStep(i+1), 80); }
+    }
+    requestAnimationFrame(animPct);
+  }
+  runStep(0);
+}
+
+// Pre-check items simulating AI detection
+function preCheckItems() {
+  const preChecked = [0, 2, 4, 6, 7, 9, 10]; // indices of items "found" by AI
+  const items = document.querySelectorAll('.check-item');
+  items.forEach((item, i) => {
+    if (preChecked.includes(i)) {
+      item.querySelector('input').checked = true;
+      item.classList.add('checked');
+    }
+  });
+  updateScore();
+}
+
+// Replace ET from inside Tab 1
+function handleFileReplace(file) {
+  if (!file) return;
+  // Reset checklist
+  resetChecklist();
+  // Show brief processing toast
+  const banner = document.getElementById('aiBanner');
+  banner.style.opacity = '0.4';
+  document.getElementById('uploadedFileName').textContent = '⏳ Analizando ' + file.name + '...';
+  document.getElementById('uploadPanelTitle').textContent = 'Analizando nuevo ET...';
+  setTimeout(() => {
+    document.getElementById('uploadedFileName').textContent = '📎 ' + file.name;
+    document.getElementById('uploadPanelTitle').textContent = 'Expediente Técnico cargado · Análisis IA completado';
+    document.getElementById('etSubtitle').textContent = file.name.replace('.pdf','').replace(/_/g,' ') + ' · Revisión en curso';
+    banner.style.opacity = '1';
+    preCheckItems();
+  }, 2200);
+}
+
+// drag & drop
+const dz = document.getElementById('dropZone');
+if (dz) {
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('dragover');
+    const f = e.dataTransfer.files[0];
+    if (f) startAnalysis(f.name, (f.size/1024/1024).toFixed(1)+' MB');
+  });
+}
+</script>
+</div><!-- end mainApp -->
+
+<!-- FORMULARIO PILOTO -->
+<div id="piloto-btn" onclick="document.getElementById('piloto-modal').style.display='flex'" style="
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: #C9952A;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s;
+" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+  🚀 Quiero participar en el piloto
+</div>
+
+<div id="piloto-modal" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+">
+  <div style="
+    background: white;
+    border-radius: 16px;
+    padding: 36px;
+    width: 100%;
+    max-width: 440px;
+    margin: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative;
+  ">
+    <button onclick="document.getElementById('piloto-modal').style.display='none'" style="
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #888;
+    ">✕</button>
+
+    <div style="font-size: 28px; margin-bottom: 8px;">🚀</div>
+    <h3 style="margin: 0 0 6px; color: #0B1F3A; font-size: 20px;">Quiero participar en el piloto</h3>
+    <p style="margin: 0 0 24px; color: #666; font-size: 14px;">Estamos seleccionando las primeras entidades públicas para probar Expediente Check. Déjanos tus datos y te contactamos.</p>
+
+    <div id="piloto-form">
+      <input id="p-nombre" type="text" placeholder="Nombre completo *" style="
+        width: 100%; padding: 10px 14px; margin-bottom: 12px;
+        border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px;
+        box-sizing: border-box; outline: none;
+      ">
+      <input id="p-entidad" type="text" placeholder="Entidad pública *" style="
+        width: 100%; padding: 10px 14px; margin-bottom: 12px;
+        border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px;
+        box-sizing: border-box; outline: none;
+      ">
+      <input id="p-cargo" type="text" placeholder="Cargo" style="
+        width: 100%; padding: 10px 14px; margin-bottom: 12px;
+        border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px;
+        box-sizing: border-box; outline: none;
+      ">
+      <input id="p-correo" type="email" placeholder="Correo electrónico *" style="
+        width: 100%; padding: 10px 14px; margin-bottom: 20px;
+        border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px;
+        box-sizing: border-box; outline: none;
+      ">
+      <button onclick="enviarPiloto()" style="
+        width: 100%; padding: 12px;
+        background: #0B1F3A; color: white;
+        border: none; border-radius: 8px;
+        font-size: 15px; font-weight: 600;
+        cursor: pointer;
+      ">Enviar solicitud</button>
+    </div>
+
+    <div id="piloto-gracias" style="display:none; text-align:center; padding: 20px 0;">
+      <div style="font-size: 40px; margin-bottom: 12px;">✅</div>
+      <h4 style="color: #0B1F3A; margin: 0 0 8px;">¡Gracias por tu interés!</h4>
+      <p style="color: #666; font-size: 14px; margin: 0;">Te contactaremos pronto para coordinar tu participación en el piloto.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function enviarPiloto() {
+  const nombre = document.getElementById('p-nombre').value.trim();
+  const entidad = document.getElementById('p-entidad').value.trim();
+  const correo = document.getElementById('p-correo').value.trim();
+  const cargo = document.getElementById('p-cargo').value.trim();
+  if (!nombre || !entidad || !correo) {
+    alert('Por favor completa los campos obligatorios (*)');
+    return;
+  }
+  const mensaje = `Hola, quiero participar en el piloto de Expediente Check 🚀\n\n👤 Nombre: ${nombre}\n🏛️ Entidad: ${entidad}\n💼 Cargo: ${cargo || 'No especificado'}\n📧 Correo: ${correo}`;
+  const url = `https://wa.me/51945831025?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, '_blank');
+  document.getElementById('piloto-modal').style.display = 'none';
+  document.getElementById('p-nombre').value = '';
+  document.getElementById('p-entidad').value = '';
+  document.getElementById('p-cargo').value = '';
+  document.getElementById('p-correo').value = '';
+}
+</script>
+</body>
+</html>

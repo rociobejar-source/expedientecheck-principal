@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expediente Check · Plataforma de Aseguramiento de Calidad de Inversiones Públicas</title>
+<meta name="description" content="Plataforma de monitoreo y aseguramiento de la calidad de inversiones públicas en ejecución, potenciada con analítica de datos e inteligencia artificial.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0B1F3A;
+  --navy-mid: #132D50;
+  --navy-light: #1E3F6B;
+  --gold: #C9952A;
+  --gold-light: #E8B84B;
+  --gold-pale: #FBF3E2;
+  --cream: #F7F3EC;
+  --cream-dark: #EDE8DF;
+  --text: #1A1A2E;
+  --text-muted: #6B7280;
+  --green: #0D7A5F;
+  --green-light: #E8F7F3;
+  --border: #DDD8CF;
+  --white: #FFFFFF;
+  --shadow: 0 4px 24px rgba(11,31,58,0.10);
+  --shadow-lg: 0 12px 48px rgba(11,31,58,0.16);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px;
+  height: 60px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 16px rgba(0,0,0,.25);
+}
+.topbar-brand { display: flex; align-items: center; gap: 14px; }
+.topbar-logo {
+  height: 36px; padding: 0 14px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-weight: 600; color: var(--navy); font-size: 12px; letter-spacing: -0.2px; white-space: nowrap;
+}
+.topbar-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 300; color: var(--white);
+  font-size: 15px; letter-spacing: .3px;
+}
+.topbar-name span { color: var(--gold-light); font-weight: 600; }
+.topbar-nav { display: flex; align-items: center; gap: 4px; }
+.topbar-link {
+  color: rgba(255,255,255,.6); font-size: 13px; font-weight: 500;
+  padding: 8px 14px; border-radius: 6px; cursor: pointer;
+  border: none; background: none; font-family: 'DM Sans', sans-serif;
+  transition: all .2s; text-decoration: none; display: block;
+}
+.topbar-link:hover { color: white; background: rgba(255,255,255,.08); }
+.topbar-cta {
+  background: var(--gold); color: var(--navy);
+  font-size: 13px; font-weight: 600;
+  padding: 9px 20px; border-radius: 8px; border: none;
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+}
+.topbar-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  background: radial-gradient(ellipse at 25% 50%, #1E3F6B 0%, #0B1F3A 65%);
+  padding: 100px 40px 90px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9952A' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: .5;
+}
+.hero-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 420px; gap: 64px; align-items: center;
+  position: relative; z-index: 1;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(201,149,42,.15); border: 1px solid rgba(201,149,42,.3);
+  color: var(--gold-light); font-size: 12px; font-weight: 500;
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 24px;
+  letter-spacing: .4px; text-transform: uppercase;
+}
+.hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-light); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.hero-title {
+  font-family: 'Fraunces', serif; font-weight: 300;
+  font-size: 46px; color: var(--white); line-height: 1.12;
+  margin-bottom: 20px; letter-spacing: -0.5px;
+}
+.hero-title strong { font-weight: 600; color: var(--gold-light); }
+.hero-subtitle {
+  color: rgba(255,255,255,.72); font-size: 16px; line-height: 1.7;
+  margin-bottom: 16px; max-width: 520px;
+}
+.hero-features {
+  display: flex; flex-direction: column; gap: 10px;
+  margin: 28px 0 36px;
+}
+.hero-feature {
+  display: flex; align-items: flex-start; gap: 10px;
+  color: rgba(255,255,255,.7); font-size: 14px;
+}
+.hero-feature-icon {
+  width: 20px; height: 20px; flex-shrink: 0;
+  background: rgba(201,149,42,.2); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; margin-top: 2px;
+}
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-hero-primary {
+  background: var(--gold); color: var(--navy);
+  font-size: 14px; font-weight: 700;
+  padding: 14px 28px; border-radius: 10px; border: none;
+  cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'DM Sans', sans-serif; text-decoration: none;
+}
+.btn-hero-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,149,42,.35); }
+.btn-hero-secondary {
+  background: rgba(255,255,255,.1); color: rgba(255,255,255,.85);
+  font-size: 14px; font-weight: 500;
+  padding: 14px 28px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.2);
+  cursor: pointer; transition: all .2s; font-family: 'DM Sans', sans-serif;
+}
+.btn-hero-secondary:hover { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.35); }
+
+/* Hero mockup */
+.hero-mockup {
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.35);
+}
+.mockup-bar {
+  background: rgba(255,255,255,.08); padding: 10px 16px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+.mockup-body { padding: 20px; }
+.mockup-stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+.mockup-stat {
+  background: rgba(255,255,255,.06); border-radius: 8px; padding: 12px;
+  text-align: center;
+}
+.mockup-stat-val { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--gold-light); }
+.mockup-stat-label { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 3px; }
+.mockup-alert {
+  background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.3);
+  border-radius: 8px; padding: 10px 14px; margin-bottom: 8px;
+  font-size: 11px; color: #FCA5A5; display: flex; align-items: center; gap: 8px;
+}
+.mockup-alert-ok {
+  background: rgba(13,122,95,.15); border: 1px solid rgba(13,122,95,.3);
+  border-radius: 8px; padding: 10px 14px;
+  font-size: 11px; color: #6EE7B7; display: flex; align-items: center; gap: 8px;
+}
+.mockup-label { font-size: 10px; color: rgba(255,255,255,.35); margin-bottom: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: .6px; }
+
+/* ── SECTION SHARED ── */
+.section { padding: 80px 40px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-eyebrow {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--gold); margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Fraunces', serif; font-weight: 300;
+  font-size: 36px; color: var(--navy); line-height: 1.2; margin-bottom: 16px;
+}
+.section-title strong { font-weight: 600; }
+.section-subtitle { color: var(--text-muted); font-size: 16px; line-height: 1.7; max-width: 580px; }
+
+/* ── QUÉ ES ── */
+.que-es { background: var(--white); }
+.que-es-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; margin-top: 48px; }
+.que-es-text p { color: var(--text-muted); font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
+.que-es-text p:last-child { margin-bottom: 0; }
+.que-es-pillars { display: flex; flex-direction: column; gap: 16px; }
+.pillar {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+}
+.pillar-icon {
+  width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+  background: var(--navy); display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.pillar-title { font-weight: 600; font-size: 14px; color: var(--navy); margin-bottom: 4px; }
+.pillar-text { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+/* ── MÓDULOS ── */
+.modulos { background: var(--cream); }
+.modulos-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; }
+.modulo-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px;
+  box-shadow: var(--shadow);
+  display: flex; flex-direction: column;
+  transition: all .25s ease;
+  position: relative; overflow: hidden;
+}
+.modulo-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.modulo-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+}
+.modulo-card.featured::before { background: linear-gradient(90deg, var(--navy), var(--navy-light)); }
+.modulo-num {
+  font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+  color: var(--text-muted); letter-spacing: .8px; text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.modulo-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+.modulo-title {
+  font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600;
+  color: var(--navy); margin-bottom: 12px; line-height: 1.2;
+}
+.modulo-desc { color: var(--text-muted); font-size: 14px; line-height: 1.7; flex: 1; }
+.modulo-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--green-light); border: 1px solid rgba(13,122,95,.2);
+  color: var(--green); font-size: 11px; font-weight: 600;
+  padding: 4px 12px; border-radius: 20px; margin-top: 20px;
+  letter-spacing: .3px;
+}
+.modulo-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+.modulo-soon {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(201,149,42,.1); border: 1px solid rgba(201,149,42,.2);
+  color: var(--gold); font-size: 11px; font-weight: 600;
+  padding: 4px 12px; border-radius: 20px; margin-top: 20px;
+}
+.modulos-cta { text-align: center; margin-top: 40px; }
+.btn-primary {
+  background: var(--navy); color: white;
+  font-size: 14px; font-weight: 600;
+  padding: 14px 32px; border-radius: 10px; border: none;
+  cursor: pointer; transition: all .2s;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-primary:hover { background: var(--navy-light); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.btn-gold {
+  background: var(--gold); color: var(--navy);
+  font-size: 14px; font-weight: 700;
+  padding: 14px 32px; border-radius: 10px; border: none;
+  cursor: pointer; transition: all .2s;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+/* ── EQUIPO ── */
+.equipo { background: var(--navy); }
+.equipo .section-eyebrow { color: var(--gold-light); }
+.equipo .section-title { color: var(--white); }
+.equipo .section-subtitle { color: rgba(255,255,255,.55); }
+.equipo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; margin-top: 48px; max-width: 800px; }
+.equipo-card {
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px; padding: 32px;
+  transition: all .25s;
+}
+.equipo-card:hover { background: rgba(255,255,255,.09); border-color: rgba(201,149,42,.3); }
+.equipo-avatar {
+  width: 60px; height: 60px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600;
+  color: var(--navy); margin-bottom: 20px;
+}
+.equipo-name {
+  font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600;
+  color: var(--white); margin-bottom: 4px;
+}
+.equipo-role {
+  font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .6px;
+  color: var(--gold-light); margin-bottom: 16px;
+}
+.equipo-bio { color: rgba(255,255,255,.55); font-size: 14px; line-height: 1.7; }
+
+/* ── TRACCIÓN ── */
+.traccion { background: var(--white); }
+.traccion-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.traccion-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.traccion-stat {
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px;
+  text-align: center;
+}
+.traccion-stat-val {
+  font-family: 'Fraunces', serif; font-size: 36px; font-weight: 600;
+  color: var(--navy); line-height: 1; margin-bottom: 6px;
+}
+.traccion-stat-label { font-size: 13px; color: var(--text-muted); }
+.traccion-text { }
+.traccion-text p { color: var(--text-muted); font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
+.traccion-quote {
+  background: var(--gold-pale); border-left: 3px solid var(--gold);
+  border-radius: 0 10px 10px 0; padding: 16px 20px;
+  font-size: 14px; color: var(--navy); line-height: 1.6;
+  font-style: italic; margin-top: 24px;
+}
+
+/* ── SEGURIDAD ── */
+.seguridad { background: var(--cream); }
+.seguridad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+.seguridad-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px;
+  box-shadow: var(--shadow);
+}
+.seguridad-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+.seguridad-title { font-weight: 600; font-size: 15px; color: var(--navy); margin-bottom: 8px; }
+.seguridad-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* ── BLOG ── */
+.blog { background: var(--white); }
+.blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
+.blog-card {
+  border: 1px solid var(--border); border-radius: 14px;
+  overflow: hidden; transition: all .25s;
+  background: var(--white);
+}
+.blog-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.blog-card-top {
+  background: var(--navy); padding: 24px;
+  min-height: 120px; display: flex; align-items: flex-end;
+}
+.blog-tag {
+  display: inline-flex;
+  background: rgba(201,149,42,.2); color: var(--gold-light);
+  font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 20px;
+}
+.blog-card-body { padding: 24px; }
+.blog-date { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-family: 'DM Mono', monospace; }
+.blog-title { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: var(--navy); line-height: 1.3; margin-bottom: 10px; }
+.blog-excerpt { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+.blog-add-note {
+  background: var(--cream); border: 2px dashed var(--border);
+  border-radius: 14px; padding: 40px 24px;
+  text-align: center; color: var(--text-muted); font-size: 14px;
+}
+.blog-add-note strong { display: block; color: var(--navy); font-size: 15px; margin-bottom: 6px; }
+
+/* ── PILOTO CTA ── */
+.piloto-section {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  padding: 80px 40px; text-align: center;
+}
+.piloto-title {
+  font-family: 'Fraunces', serif; font-size: 36px; font-weight: 300;
+  color: var(--white); margin-bottom: 16px;
+}
+.piloto-title strong { font-weight: 600; color: var(--gold-light); }
+.piloto-sub { color: rgba(255,255,255,.6); font-size: 16px; margin-bottom: 36px; }
+
+/* ── FOOTER ── */
+footer {
+  background: #060F1C; padding: 32px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-brand { font-family: 'Fraunces', serif; font-weight: 300; color: rgba(255,255,255,.4); font-size: 14px; }
+.footer-brand strong { color: rgba(255,255,255,.6); font-weight: 600; }
+.footer-copyright { color: rgba(255,255,255,.25); font-size: 12px; text-align: center; flex: 1; }
+.footer-links { display: flex; gap: 20px; }
+.footer-link { color: rgba(255,255,255,.3); font-size: 12px; text-decoration: none; cursor: pointer; }
+.footer-link:hover { color: rgba(255,255,255,.6); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); z-index: 9999;
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: white; border-radius: 16px;
+  padding: 36px; width: 100%; max-width: 440px;
+  margin: 20px; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  position: relative; animation: slideUp .25s ease;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: none; border: none; font-size: 20px;
+  cursor: pointer; color: #888;
+}
+.modal-input {
+  width: 100%; padding: 10px 14px; margin-bottom: 12px;
+  border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px;
+  font-family: 'DM Sans', sans-serif; outline: none; transition: border .2s;
+}
+.modal-input:focus { border-color: var(--navy); }
+.modal-btn {
+  width: 100%; padding: 13px;
+  background: var(--navy); color: white;
+  border: none; border-radius: 8px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: background .2s;
+}
+.modal-btn:hover { background: var(--navy-light); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .topbar { padding: 0 20px; }
+  .topbar-nav { display: none; }
+  .hero { padding: 60px 20px 60px; }
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .hero-mockup { display: none; }
+  .hero-title { font-size: 32px; }
+  .section { padding: 56px 20px; }
+  .que-es-grid, .traccion-inner { grid-template-columns: 1fr; gap: 36px; }
+  .modulos-grid, .seguridad-grid, .blog-grid { grid-template-columns: 1fr; }
+  .equipo-grid { grid-template-columns: 1fr; }
+  .traccion-stats { grid-template-columns: repeat(2,1fr); }
+  footer { flex-direction: column; text-align: center; }
+  .footer-links { justify-content: center; }
+}
+
+/* ── STICKY PILOTO BTN ── */
+.piloto-fab {
+  position: fixed; bottom: 28px; right: 28px;
+  background: var(--gold); color: var(--navy);
+  padding: 13px 22px; border-radius: 50px;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; box-shadow: 0 6px 20px rgba(201,149,42,.4);
+  z-index: 999; display: flex; align-items: center; gap: 8px;
+  transition: all .2s; border: none; font-family: 'DM Sans', sans-serif;
+}
+.piloto-fab:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(201,149,42,.5); }
+
+/* Demo iframe modal */
+.demo-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.7); z-index: 9998;
+  align-items: center; justify-content: center;
+}
+.demo-overlay.open { display: flex; }
+.demo-box {
+  background: var(--navy); border-radius: 16px;
+  width: 95vw; max-width: 1100px; height: 85vh;
+  position: relative; overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.6);
+  display: flex; flex-direction: column;
+}
+.demo-header {
+  background: var(--navy-mid); padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.demo-title { color: rgba(255,255,255,.7); font-size: 13px; font-weight: 500; }
+.demo-close {
+  background: rgba(255,255,255,.1); border: none; color: white;
+  border-radius: 6px; padding: 5px 12px; cursor: pointer;
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+}
+.demo-iframe-wrap { flex: 1; background: var(--cream); }
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">ExpedienteCheck</div>
+    <div class="topbar-name"><span>Expediente Check</span></div>
+  </div>
+  <nav class="topbar-nav">
+    <a href="#que-es" class="topbar-link">Plataforma</a>
+    <a href="#modulos" class="topbar-link">Módulos</a>
+    <a href="#equipo" class="topbar-link">Equipo</a>
+    <a href="#blog" class="topbar-link">Novedades</a>
+  </nav>
+  <button class="topbar-cta" onclick="openPiloto()">🚀 Participar en el piloto</button>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Módulo de Monitoreo · Primera versión operativa
+      </div>
+      <h1 class="hero-title">
+        Expediente<br><strong>Check</strong>
+      </h1>
+      <p class="hero-subtitle">
+        Plataforma de monitoreo y aseguramiento de la calidad de inversiones públicas en ejecución, potenciada con analítica de datos e inteligencia artificial.
+      </p>
+      <div class="hero-features">
+        <div class="hero-feature">
+          <div class="hero-feature-icon">🔗</div>
+          <span>Integra información de sistemas como <strong style="color:rgba(255,255,255,.9)">SSI e Infobras</strong> en una sola vista ejecutiva.</span>
+        </div>
+        <div class="hero-feature">
+          <div class="hero-feature-icon">⚡</div>
+          <span>Genera <strong style="color:rgba(255,255,255,.9)">alertas tempranas</strong> sobre riesgos, retrasos e inconsistencias.</span>
+        </div>
+        <div class="hero-feature">
+          <div class="hero-feature-icon">🧠</div>
+          <span>Mejora la <strong style="color:rgba(255,255,255,.9)">toma de decisiones</strong> mediante analítica avanzada e IA.</span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-hero-primary" onclick="openDemo()">
+          🎬 Ver demo
+        </button>
+        <button class="btn-hero-secondary" onclick="document.getElementById('que-es').scrollIntoView({behavior:'smooth'})">
+          Saber más ↓
+        </button>
+      </div>
+    </div>
+    <div class="hero-mockup">
+      <div class="mockup-bar">
+        <div class="mockup-dot" style="background:#FF5F57"></div>
+        <div class="mockup-dot" style="background:#FFBD2E"></div>
+        <div class="mockup-dot" style="background:#28C840"></div>
+        <span style="color:rgba(255,255,255,.3);font-size:11px;margin-left:8px">Monitor de Obras · Dashboard Ejecutivo</span>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-label">Resumen del portafolio</div>
+        <div class="mockup-stat-row">
+          <div class="mockup-stat">
+            <div class="mockup-stat-val">24</div>
+            <div class="mockup-stat-label">Proyectos activos</div>
+          </div>
+          <div class="mockup-stat">
+            <div class="mockup-stat-val">S/47M</div>
+            <div class="mockup-stat-label">Inversión monitoreada</div>
+          </div>
+          <div class="mockup-stat">
+            <div class="mockup-stat-val">3</div>
+            <div class="mockup-stat-label">Alertas críticas</div>
+          </div>
+        </div>
+        <div class="mockup-label" style="margin-top:12px">Alertas recientes</div>
+        <div class="mockup-alert">
+          🔴 &nbsp;<span>Retraso &gt;30% en obra vial Acora — requiere atención</span>
+        </div>
+        <div class="mockup-alert" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3);color:#FCD34D">
+          🟡 &nbsp;<span>Inconsistencia de avance físico vs. financiero — Mejoramiento IE</span>
+        </div>
+        <div class="mockup-alert-ok">
+          ✅ &nbsp;<span>Sistema de agua potable Ilave — ejecución en cronograma</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ QUÉ ES ═══ -->
+<section class="section que-es" id="que-es">
+  <div class="section-inner">
+    <div class="section-eyebrow">La Plataforma</div>
+    <h2 class="section-title">¿Qué es <strong>Expediente Check</strong>?</h2>
+    <div class="que-es-grid">
+      <div class="que-es-text">
+        <p>Expediente Check es una plataforma GovTech enfocada en el aseguramiento de la calidad del expediente técnico y la ejecución de obras públicas, orientada a entidades del sector público peruano.</p>
+        <p>Combina <strong>analítica de datos</strong> e <strong>inteligencia artificial</strong> para transformar la forma en que las unidades ejecutoras, OPI y supervisores gestionan el ciclo de vida de las inversiones: desde la revisión del expediente hasta el monitoreo en ejecución.</p>
+        <p>La plataforma no reemplaza al especialista; lo potencia con información estructurada, alertas oportunas y herramientas que elevan la calidad y la oportunidad de la toma de decisiones.</p>
+      </div>
+      <div class="que-es-pillars">
+        <div class="pillar">
+          <div class="pillar-icon">📋</div>
+          <div>
+            <div class="pillar-title">Revisión de expedientes técnicos</div>
+            <div class="pillar-text">Herramientas de análisis de calidad, consistencia y observaciones en expedientes técnicos antes de su aprobación.</div>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">📡</div>
+          <div>
+            <div class="pillar-title">Monitoreo de ejecución</div>
+            <div class="pillar-text">Vista integrada con SSI e Infobras. Alertas tempranas y seguimiento del portafolio de proyectos en tiempo real.</div>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">🤖</div>
+          <div>
+            <div class="pillar-title">Asistente normativo con IA</div>
+            <div class="pillar-text">Motor de IA con base de conocimiento normativa para orientar revisiones y reducir observaciones subsanables.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MÓDULOS ═══ -->
+<section class="section modulos" id="modulos">
+  <div class="section-inner">
+    <div class="section-eyebrow">Módulos de la Plataforma</div>
+    <h2 class="section-title">Tres módulos integrados para el <strong>ciclo completo</strong></h2>
+    <p class="section-subtitle">Desde la revisión del expediente hasta el monitoreo en ejecución, con inteligencia artificial en cada etapa.</p>
+    <div class="modulos-grid">
+      <!-- Módulo 1 -->
+      <div class="modulo-card">
+        <div class="modulo-num">Módulo 01</div>
+        <span class="modulo-icon">📋</span>
+        <div class="modulo-title">Análisis de Expedientes</div>
+        <div class="modulo-desc">
+          Revisión automatizada de calidad y consistencia en expedientes técnicos. Detecta observaciones frecuentes, verifica el cumplimiento normativo y genera informes de revisión estructurados para especialistas y OPI.
+        </div>
+        <div class="modulo-soon">🔧 En desarrollo</div>
+      </div>
+      <!-- Módulo 2 -->
+      <div class="modulo-card">
+        <div class="modulo-num">Módulo 02</div>
+        <span class="modulo-icon">💬</span>
+        <div class="modulo-title">Asistente Inteligente de Normativa</div>
+        <div class="modulo-desc">
+          Asistente de IA con base normativa actualizada — Directiva 001-2019-EF/63.01, RNE, manuales sectoriales — para orientar revisiones técnicas, reducir observaciones subsanables y acortar tiempos de aprobación.
+        </div>
+        <div class="modulo-soon">🔧 En desarrollo</div>
+      </div>
+      <!-- Módulo 3 -->
+      <div class="modulo-card featured">
+        <div class="modulo-num">Módulo 03</div>
+        <span class="modulo-icon">📡</span>
+        <div class="modulo-title">Monitoreo y Alertas</div>
+        <div class="modulo-desc">
+          Integra información de SSI, Infobras y otras fuentes en una vista ejecutiva del portafolio de proyectos. Genera alertas tempranas sobre riesgos, retrasos e inconsistencias entre avance físico y financiero.<br><br>
+          Permite a especialistas, residentes y supervisores no solo reportar información, sino gestionar activamente las inversiones — incorporando un enfoque tipo PMO que mejora la calidad, oportunidad y uso de la información en la toma de decisiones.
+        </div>
+        <div class="modulo-badge">
+          <span class="modulo-badge-dot"></span>
+          Primera versión operativa
+        </div>
+      </div>
+    </div>
+    <div class="modulos-cta">
+      <button class="btn-gold" onclick="openDemo()">
+        🎬 Ver demo completo de toda la plataforma
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EQUIPO ═══ -->
+<section class="section equipo" id="equipo">
+  <div class="section-inner">
+    <div class="section-eyebrow">Quiénes Somos</div>
+    <h2 class="section-title">Un equipo con <strong>experiencia en el sector</strong></h2>
+    <p class="section-subtitle">Combinamos trayectoria en inversión pública con capacidad tecnológica para construir soluciones reales para el Estado peruano.</p>
+    <div class="equipo-grid">
+      <div class="equipo-card">
+        <div class="equipo-avatar">RB</div>
+        <div class="equipo-name">Rocío Béjar</div>
+        <div class="equipo-role">Liderazgo del Proyecto</div>
+        <div class="equipo-bio">
+          Especialista en inversión pública con amplia trayectoria en el ciclo de proyectos del Estado peruano. Ex Directora General de Invierte.pe (DGPMI-MEF), con experiencia directa en el diseño, implementación y mejora continua del sistema de inversiones públicas del país.
+        </div>
+      </div>
+      <div class="equipo-card">
+        <div class="equipo-avatar">MB</div>
+        <div class="equipo-name">Marco Béjar</div>
+        <div class="equipo-role">Arquitectura Tecnológica y Seguridad</div>
+        <div class="equipo-bio">
+          Responsable del desarrollo, arquitectura tecnológica y seguridad de la plataforma. Lidera el diseño técnico del sistema con foco en la integridad de los datos, la escalabilidad y las buenas prácticas de desarrollo de software para entornos institucionales.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TRACCIÓN ═══ -->
+<section class="section traccion" id="traccion">
+  <div class="section-inner">
+    <div class="traccion-inner">
+      <div class="traccion-text">
+        <div class="section-eyebrow">Avance y Tracción</div>
+        <h2 class="section-title">Primeras entidades <strong>ya en conversación</strong></h2>
+        <p>Expediente Check se encuentra en etapa de piloto, con avances concretos en la implementación del módulo de monitoreo y alertas en su primera versión.</p>
+        <p>Actualmente mantenemos acuerdos y conversaciones activas con municipalidades interesadas en implementar la primera etapa de la plataforma, validando el modelo con equipos técnicos reales en contextos de inversión pública.</p>
+        <div class="traccion-quote">
+          "El objetivo del piloto es demostrar valor real en la gestión de inversiones, con datos concretos que respalden la escalabilidad de la plataforma a más entidades del sector público."
+        </div>
+      </div>
+      <div>
+        <div class="traccion-stats">
+          <div class="traccion-stat">
+            <div class="traccion-stat-val">1</div>
+            <div class="traccion-stat-label">Módulo operativo en versión piloto</div>
+          </div>
+          <div class="traccion-stat">
+            <div class="traccion-stat-val">3+</div>
+            <div class="traccion-stat-label">Municipalidades en proceso de incorporación</div>
+          </div>
+          <div class="traccion-stat">
+            <div class="traccion-stat-val">2</div>
+            <div class="traccion-stat-label">Sistemas públicos integrados (SSI, Infobras)</div>
+          </div>
+          <div class="traccion-stat">
+            <div class="traccion-stat-val">2025</div>
+            <div class="traccion-stat-label">Año de lanzamiento de primera versión</div>
+          </div>
+        </div>
+        <div style="margin-top:28px;text-align:center">
+          <button class="btn-primary" onclick="openPiloto()">
+            🚀 Quiero participar en el piloto
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEGURIDAD ═══ -->
+<section class="section seguridad" id="seguridad">
+  <div class="section-inner">
+    <div class="section-eyebrow">Seguridad y Confianza</div>
+    <h2 class="section-title">Diseñado con <strong>estándares de seguridad</strong> institucional</h2>
+    <p class="section-subtitle">Expediente Check ha sido desarrollado considerando estándares de seguridad para el manejo de información pública y el acceso a datos sensibles del Estado.</p>
+    <div class="seguridad-grid">
+      <div class="seguridad-card">
+        <span class="seguridad-icon">🔐</span>
+        <div class="seguridad-title">Control de accesos por perfiles</div>
+        <div class="seguridad-text">Gestión de roles y permisos diferenciados por tipo de usuario: especialistas, supervisores, residentes y gestores institucionales.</div>
+      </div>
+      <div class="seguridad-card">
+        <span class="seguridad-icon">🛡️</span>
+        <div class="seguridad-title">Protección e integridad de datos</div>
+        <div class="seguridad-text">Arquitectura orientada a la integridad y confidencialidad de la información. Buenas prácticas de seguridad en todo el ciclo de desarrollo.</div>
+      </div>
+      <div class="seguridad-card">
+        <span class="seguridad-icon">⚖️</span>
+        <div class="seguridad-title">Desarrollo propio y protegido</div>
+        <div class="seguridad-text">El sistema es de desarrollo propio y cuenta con medidas de protección sobre su código y funcionamiento, garantizando la propiedad intelectual del producto.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BLOG ═══ -->
+<section class="section blog" id="blog">
+  <div class="section-inner">
+    <div class="section-eyebrow">Novedades</div>
+    <h2 class="section-title">Últimas <strong>actualizaciones</strong></h2>
+    <p class="section-subtitle">Seguimos el avance del proyecto, incorporación de nuevas entidades y aprendizajes del piloto.</p>
+    <div class="blog-grid">
+      <div class="blog-card">
+        <div class="blog-card-top" style="background:linear-gradient(135deg,#0B1F3A,#1E3F6B)">
+          <span class="blog-tag">Lanzamiento</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-date">Abril 2026</div>
+          <div class="blog-title">Primera versión del Módulo de Monitoreo y Alertas ya disponible</div>
+          <div class="blog-excerpt">Lanzamos la primera versión operativa del módulo de monitoreo con integración a SSI e Infobras, ofreciendo una vista ejecutiva del portafolio de proyectos.</div>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-card-top" style="background:linear-gradient(135deg,#064E3B,#065F46)">
+          <span class="blog-tag">Piloto</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-date">Marzo 2026</div>
+          <div class="blog-title">Conversaciones con municipalidades para implementar la primera etapa</div>
+          <div class="blog-excerpt">Iniciamos acercamientos con municipalidades de la región para validar el modelo de monitoreo y ajustar la plataforma a sus necesidades operativas.</div>
+        </div>
+      </div>
+      <!-- Placeholder para próximas entradas -->
+      <div class="blog-add-note">
+        <strong>Próximas novedades</strong>
+        Aquí aparecerán los siguientes avances, anuncios de nuevas municipalidades y actualizaciones del desarrollo de la plataforma.
+        <br><br>
+        <span style="font-size:12px;color:var(--text-muted)">Si deseas ser parte de está innovación contáctanos.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PILOTO CTA ═══ -->
+<section class="piloto-section">
+  <div style="max-width:680px;margin:0 auto">
+    <div class="section-eyebrow" style="color:var(--gold-light);text-align:center;margin-bottom:16px">Programa de Piloto</div>
+    <h2 class="piloto-title">¿Tu entidad quiere implementar <strong>Expediente Check</strong>?</h2>
+    <p class="piloto-sub">Estamos seleccionando las primeras municipalidades y entidades públicas para implementar el piloto. Déjanos tus datos y coordinamos una presentación.</p>
+    <button class="btn-gold" style="font-size:16px;padding:16px 40px" onclick="openPiloto()">
+      🚀 Quiero participar en el piloto
+    </button>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-brand"><strong>Expediente Check</strong> · GovTech Perú</div>
+  <div class="footer-copyright">© 2025 Expediente Check. Todos los derechos reservados. Propiedad intelectual protegida.</div>
+  <div class="footer-links">
+    <span class="footer-link" onclick="openPiloto()">Participar en piloto</span>
+    <a href="#seguridad" class="footer-link">Seguridad</a>
+  </div>
+</footer>
+
+<!-- ═══ FAB PILOTO ═══ -->
+<button class="piloto-fab" onclick="openPiloto()">
+  🚀 Quiero participar en el piloto
+</button>
+
+<!-- ═══ MODAL PILOTO ═══ -->
+<div class="modal-overlay" id="piloto-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closePiloto()">✕</button>
+    <div style="font-size:28px;margin-bottom:8px">🚀</div>
+    <h3 style="margin:0 0 6px;color:var(--navy);font-size:20px;font-family:'Fraunces',serif;font-weight:600">Participar en el piloto</h3>
+    <p style="margin:0 0 24px;color:var(--text-muted);font-size:14px">Estamos seleccionando las primeras entidades públicas para probar Expediente Check. Déjanos tus datos y te contactamos.</p>
+    <div id="piloto-form">
+      <input id="p-nombre" class="modal-input" type="text" placeholder="Nombre completo *">
+      <input id="p-entidad" class="modal-input" type="text" placeholder="Entidad pública *">
+      <input id="p-cargo" class="modal-input" type="text" placeholder="Cargo">
+      <input id="p-correo" class="modal-input" type="email" placeholder="Correo electrónico *">
+      <button class="modal-btn" onclick="enviarPiloto()">Enviar solicitud</button>
+    </div>
+    <div id="piloto-gracias" style="display:none;text-align:center;padding:20px 0">
+      <div style="font-size:40px;margin-bottom:12px">✅</div>
+      <h4 style="color:var(--navy);margin:0 0 8px;font-family:'Fraunces',serif">¡Gracias por tu interés!</h4>
+      <p style="color:var(--text-muted);font-size:14px;margin:0">Te contactaremos pronto para coordinar tu participación en el piloto.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DEMO OVERLAY ═══ -->
+<div class="demo-overlay" id="demo-overlay">
+  <div class="demo-box">
+    <div class="demo-header">
+      <span class="demo-title">🎬 Demo — Expediente Check · Módulo de Monitoreo y Alertas</span>
+      <button class="demo-close" onclick="closeDemo()">✕ Cerrar demo</button>
+    </div>
+    <div class="demo-iframe-wrap" id="demo-content"></div>
+  </div>
+</div>
+
+<script>
+// Navigation smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({behavior:'smooth'});
+  });
+});
+
+// Piloto modal
+function openPiloto() {
+  document.getElementById('piloto-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePiloto() {
+  document.getElementById('piloto-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('piloto-modal').addEventListener('click', function(e) {
+  if (e.target === this) closePiloto();
+});
+
+function enviarPiloto() {
+  const nombre = document.getElementById('p-nombre').value.trim();
+  const entidad = document.getElementById('p-entidad').value.trim();
+  const correo = document.getElementById('p-correo').value.trim();
+  const cargo = document.getElementById('p-cargo').value.trim();
+  if (!nombre || !entidad || !correo) {
+    alert('Por favor completa los campos obligatorios (*)');
+    return;
+  }
+  const mensaje = `Hola, quiero participar en el piloto de Expediente Check 🚀\n\n👤 Nombre: ${nombre}\n🏛️ Entidad: ${entidad}\n💼 Cargo: ${cargo || 'No especificado'}\n📧 Correo: ${correo}`;
+  const url = `https://wa.me/51945831025?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, '_blank');
+  document.getElementById('piloto-form').style.display = 'none';
+  document.getElementById('piloto-gracias').style.display = 'block';
+  setTimeout(() => {
+    closePiloto();
+    document.getElementById('piloto-form').style.display = 'block';
+    document.getElementById('piloto-gracias').style.display = 'none';
+    ['p-nombre','p-entidad','p-cargo','p-correo'].forEach(id => document.getElementById(id).value = '');
+  }, 4000);
+}
+
+// Demo modal - opens the full demo app inline
+function openDemo() {
+  document.getElementById('demo-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Load the demo app inside an iframe pointing to itself with ?demo=1
+  const wrap = document.getElementById('demo-content');
+  if (!wrap.innerHTML.trim()) {
+    wrap.innerHTML = '<iframe src="demo.html" style="width:100%;height:100%;border:none;"></iframe>';
+  }
+}
+function closeDemo() {
+  document.getElementById('demo-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('demo-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeDemo();
+});
+</script>
+
+</body>
+</html>
