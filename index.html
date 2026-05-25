@@ -356,7 +356,8 @@ body {
 .blog-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
 .blog-card-top {
   background: var(--navy); padding: 24px;
-  min-height: 120px; display: flex; align-items: flex-end;
+  min-height: 180px; display: flex; align-items: flex-end;
+  background-size: cover; background-position: center;
 }
 .blog-tag {
   display: inline-flex;
@@ -497,7 +498,6 @@ footer {
 <div class="topbar">
   <div class="topbar-brand">
     <div class="topbar-logo">ExpedienteCheck</div>
-    <div class="topbar-name"><span>Expediente Check</span></div>
   </div>
   <nav class="topbar-nav">
     <a href="#que-es" class="topbar-link">Plataforma</a>
@@ -649,7 +649,7 @@ footer {
         <div class="modulo-soon">🔧 En desarrollo</div>
       </div>
       <!-- Módulo 3 -->
-      <div class="modulo-card featured">
+      <a class="modulo-card featured" href="https://monitor.expedientecheck.com/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;cursor:pointer;display:block;">
         <div class="modulo-num">Módulo 03</div>
         <span class="modulo-icon">📡</span>
         <div class="modulo-title">Monitoreo y Alertas</div>
@@ -659,9 +659,9 @@ footer {
         </div>
         <div class="modulo-badge">
           <span class="modulo-badge-dot"></span>
-          Primera versión operativa
+          Primera versión operativa · Click para acceder →
         </div>
-      </div>
+      </a>
     </div>
     <div class="modulos-cta">
       <button class="btn-gold" onclick="openDemo()">
@@ -788,7 +788,17 @@ footer {
     <p class="section-subtitle">Seguimos el avance del proyecto, incorporación de nuevas entidades y aprendizajes del piloto.</p>
     <div class="blog-grid">
       <div class="blog-card">
-        <div class="blog-card-top" style="background:linear-gradient(135deg,#0B1F3A,#1E3F6B)">
+        <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(11,31,58,.15),rgba(11,31,58,.55)),url('/img/youtube-canal.jpg') center/cover">
+          <span class="blog-tag">Novedad</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-date">Mayo 2026</div>
+          <div class="blog-title">Canal oficial de YouTube ya disponible</div>
+          <div class="blog-excerpt">Lanzamos nuestro canal oficial de YouTube para compartir novedades de la plataforma, avances del proyecto y contenido educativo sobre inteligencia artificial, inversión pública e innovación aplicada a la gestión municipal.<br><br><a href="https://www.youtube.com/@ExpedienteCheck" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600;text-decoration:none">👉 youtube.com/@ExpedienteCheck</a></div>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(11,31,58,.15),rgba(11,31,58,.75)),url('/img/lanzamiento.jpg') center/cover">
           <span class="blog-tag">Lanzamiento</span>
         </div>
         <div class="blog-card-body">
@@ -798,7 +808,7 @@ footer {
         </div>
       </div>
       <div class="blog-card">
-        <div class="blog-card-top" style="background:linear-gradient(135deg,#064E3B,#065F46)">
+        <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(6,78,59,.15),rgba(6,78,59,.75)),url('/img/piloto.jpg') center/cover">
           <span class="blog-tag">Piloto</span>
         </div>
         <div class="blog-card-body">
@@ -807,16 +817,23 @@ footer {
           <div class="blog-excerpt">Iniciamos acercamientos con municipalidades de la región para validar el modelo de monitoreo y ajustar la plataforma a sus necesidades operativas.</div>
         </div>
       </div>
-      <!-- Placeholder para próximas entradas -->
-      <div class="blog-add-note">
-        <strong>Próximas novedades</strong>
-        Aquí aparecerán los siguientes avances, anuncios de nuevas municipalidades y actualizaciones del desarrollo de la plataforma.
-        <br><br>
-        <span style="font-size:12px;color:var(--text-muted)">Si deseas ser parte de está innovación contáctanos.</span>
-      </div>
     </div>
   </div>
 </section>
+
+<!-- ═══ YOUTUBE ═══ -->
+<section class="section" id="videos" style="padding-top:0">
+  <div class="section-inner">
+    <div class="section-eyebrow">Canal de YouTube</div>
+    <h2 class="section-title">Mira nuestros <strong>últimos videos</strong></h2>
+    <p class="section-subtitle">Contenido educativo sobre inversión pública, Invierte.pe y cómo Expediente Check ayuda a mejorar la calidad del gasto. <a href="https://www.youtube.com/@ExpedienteCheck" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600;text-decoration:none">Suscríbete al canal →</a></p>
+    <a href="https://preguntas.expedientecheck.com/" target="_blank" rel="noopener" class="btn-primary" style="display:inline-block;margin-top:18px;text-decoration:none">💬 ¿Tienes dudas? Resuélvelas aquí →</a>
+    <div class="blog-grid" id="yt-grid" style="margin-top:24px">
+      <div class="blog-add-note" id="yt-loading">Cargando videos…</div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ═══ PILOTO CTA ═══ -->
 <section class="piloto-section">
@@ -940,7 +957,51 @@ function closeDemo() {
 document.getElementById('demo-overlay').addEventListener('click', function(e) {
   if (e.target === this) closeDemo();
 });
+
+// YouTube videos loader
+(async function loadVideos() {
+  const grid = document.getElementById('yt-grid');
+  const loading = document.getElementById('yt-loading');
+  if (!grid) return;
+  try {
+    const res = await fetch('/api/public/youtube');
+    const data = await res.json();
+    if (!data.success || !Array.isArray(data.videos) || data.videos.length === 0) {
+      if (loading) loading.textContent = 'No se pudieron cargar los videos.';
+      return;
+    }
+    const months = ['ene','feb','mar','abr','may','jun','jul','ago','set','oct','nov','dic'];
+    const cards = data.videos.slice(0, 3).map(v => {
+      const d = new Date(v.published);
+      const date = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+      const tag = v.isShort ? 'Short' : 'Video';
+      const safeTitle = v.title.replace(/</g,'&lt;');
+      const safeDesc = (v.description || '').replace(/</g,'&lt;');
+      return `
+        <a href="${v.url}" target="_blank" rel="noopener" class="blog-card" style="text-decoration:none;color:inherit;display:block">
+          <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(11,31,58,.05),rgba(11,31,58,.65)),url('${v.thumbnail}') center/cover;min-height:180px;position:relative">
+            <span class="blog-tag">${tag}</span>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:rgba(201,149,42,.95);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.3)">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#0B1F3A"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-date">${date}</div>
+            <div class="blog-title">${safeTitle}</div>
+            <div class="blog-excerpt">${safeDesc}</div>
+          </div>
+        </a>`;
+    }).join('');
+    grid.innerHTML = cards;
+    // Guardar altura real para la animación de despliegue
+    grid.dataset.loaded = 'true';
+  } catch (err) {
+    if (loading) loading.textContent = 'Error al cargar videos.';
+  }
+})();
+
 </script>
+
 
 </body>
 </html>
