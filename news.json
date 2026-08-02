@@ -1,0 +1,38 @@
+[
+  {
+    "date": "Julio 2026",
+    "tag": "Nueva entidad",
+    "title": "Iniciamos en la Municipalidad de Miraflores y la Municipalidad de Urubamba",
+    "excerpt": "Comenzamos la implementación del piloto de Expediente Check con dos nuevas entidades: la Municipalidad de Miraflores y la Municipalidad de Urubamba, ampliando el alcance de la plataforma a más equipos técnicos.",
+    "image": "/img/news/miraflores-urubamba.jpg"
+  },
+  {
+    "date": "Junio 2026",
+    "tag": "Reconocimiento",
+    "title": "Ganamos el Reto Miraflores de Innovación",
+    "excerpt": "Expediente Check fue reconocido como ganador del Reto Miraflores de Innovación, un logro que valida el potencial de la plataforma para transformar la gestión de inversiones públicas.",
+    "image": "/img/news/reto-miraflores.jpg"
+  },
+  {
+    "date": "Mayo 2026",
+    "tag": "Novedad",
+    "title": "Canal oficial de YouTube ya disponible",
+    "excerpt": "Lanzamos nuestro canal oficial de YouTube para compartir novedades de la plataforma, avances del proyecto y contenido educativo sobre inteligencia artificial, inversión pública e innovación aplicada a la gestión municipal.",
+    "link": "https://www.youtube.com/@ExpedienteCheck",
+    "image": "/img/youtube-canal.jpg"
+  },
+  {
+    "date": "Abril 2026",
+    "tag": "Lanzamiento",
+    "title": "Primera versión del Módulo de Monitoreo y Alertas ya disponible",
+    "excerpt": "Lanzamos la primera versión operativa del módulo de monitoreo con integración a SSI e Infobras, ofreciendo una vista ejecutiva del portafolio de proyectos.",
+    "image": "/img/lanzamiento.jpg"
+  },
+  {
+    "date": "Marzo 2026",
+    "tag": "Piloto",
+    "title": "Conversaciones con municipalidades para implementar la primera etapa",
+    "excerpt": "Iniciamos acercamientos con municipalidades de la región para validar el modelo de monitoreo y ajustar la plataforma a sus necesidades operativas.",
+    "image": "/img/piloto.jpg"
+  }
+]

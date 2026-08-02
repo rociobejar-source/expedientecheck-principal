@@ -299,6 +299,11 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600;
   color: var(--navy); margin-bottom: 20px;
+  position: relative; overflow: hidden;
+}
+.equipo-avatar img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; border-radius: 14px;
 }
 .equipo-name {
   font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600;
@@ -680,7 +685,7 @@ footer {
    <div class="equipo-grid">
   
  <div class="equipo-card">
-  <div class="equipo-avatar">RB</div>
+  <div class="equipo-avatar"><img src="/img/team/rocio.jpg" alt="Rocío Béjar" onerror="this.remove()">RB</div>
   <div class="equipo-name">Rocío Béjar</div>
   <div class="equipo-role">Liderazgo del Proyecto</div>
   <div class="equipo-bio">
@@ -691,7 +696,7 @@ footer {
 </div>
 
 <div class="equipo-card">
-  <div class="equipo-avatar">MB</div>
+  <div class="equipo-avatar"><img src="/img/team/marco.jpg" alt="Marco Béjar" onerror="this.remove()">MB</div>
   <div class="equipo-name">Marco Béjar</div>
   <div class="equipo-role">Arquitectura Tecnológica y Seguridad</div>
   <div class="equipo-bio">
@@ -702,7 +707,7 @@ footer {
 </div>
 
 <div class="equipo-card">
-  <div class="equipo-avatar">RS</div>
+  <div class="equipo-avatar"><img src="/img/team/rodrigo.jpg" alt="Rodrigo Polo" onerror="this.remove()">RS</div>
   <div class="equipo-name">Rodrigo Polo</div>
   <div class="equipo-role">Full Stack Developer</div>
   <div class="equipo-bio">
@@ -786,7 +791,7 @@ footer {
     <div class="section-eyebrow">Novedades</div>
     <h2 class="section-title">Últimas <strong>actualizaciones</strong></h2>
     <p class="section-subtitle">Seguimos el avance del proyecto, incorporación de nuevas entidades y aprendizajes del piloto.</p>
-    <div class="blog-grid">
+    <div class="blog-grid" id="news-grid">
       <div class="blog-card">
         <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(11,31,58,.15),rgba(11,31,58,.55)),url('/img/youtube-canal.jpg') center/cover">
           <span class="blog-tag">Novedad</span>
@@ -1002,6 +1007,39 @@ function closeDemo() {
 document.getElementById('demo-overlay').addEventListener('click', function(e) {
   if (e.target === this) closeDemo();
 });
+
+// Novedades loader — lee news.json; si falla (ej. abriendo el archivo local sin
+// servidor), se quedan las tarjetas estáticas ya presentes en el HTML.
+// Para publicar una noticia nueva: agrega un objeto al inicio del array en news.json
+// (date, tag, title, excerpt, image y opcionalmente link) — no hace falta tocar este HTML.
+(async function loadNews() {
+  const grid = document.getElementById('news-grid');
+  if (!grid) return;
+  try {
+    const res = await fetch('news.json');
+    if (!res.ok) return;
+    const items = await res.json();
+    if (!Array.isArray(items) || items.length === 0) return;
+    grid.innerHTML = items.map(n => {
+      const linkHtml = n.link
+        ? `<br><br><a href="${n.link}" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600;text-decoration:none">👉 ${n.link.replace(/^https?:\/\//,'')}</a>`
+        : '';
+      return `
+        <div class="blog-card">
+          <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(11,31,58,.15),rgba(11,31,58,.65)),url('${n.image || ''}') center/cover">
+            <span class="blog-tag">${n.tag || 'Novedad'}</span>
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-date">${n.date || ''}</div>
+            <div class="blog-title">${n.title || ''}</div>
+            <div class="blog-excerpt">${n.excerpt || ''}${linkHtml}</div>
+          </div>
+        </div>`;
+    }).join('');
+  } catch (err) {
+    // Sin conexión al JSON (ej. file://) — se conserva el contenido estático del HTML.
+  }
+})();
 
 // YouTube videos loader
 (async function loadVideos() {
