@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Expediente Check · Plataforma de Aseguramiento de Calidad de Inversiones Públicas</title>
 <meta name="description" content="Plataforma de monitoreo y aseguramiento de la calidad de inversiones públicas en ejecución, potenciada con analítica de datos e inteligencia artificial.">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;0,700;0,900;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
   --navy: #0B1F3A;
@@ -111,6 +111,13 @@ body {
   margin-bottom: 20px; letter-spacing: -0.5px;
 }
 .hero-title strong { font-weight: 600; color: var(--gold-light); }
+.hero-title-impact {
+  font-family: 'Fraunces', serif; font-weight: 900;
+  font-size: 52px; color: var(--white); line-height: 1.08;
+  margin-bottom: 22px; letter-spacing: -1px;
+}
+.hero-title-impact strong { font-weight: 900; color: var(--gold-light); }
+@media (max-width: 900px) { .hero-title-impact { font-size: 36px; } }
 .hero-subtitle {
   color: rgba(255,255,255,.72); font-size: 16px; line-height: 1.7;
   margin-bottom: 16px; max-width: 520px;
@@ -331,6 +338,15 @@ body {
 .traccion-stat-label { font-size: 13px; color: var(--text-muted); }
 .traccion-text { }
 .traccion-text p { color: var(--text-muted); font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
+.clientes-carousel { position: relative; margin: 32px 0 40px; }
+.clientes-track { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; }
+.clientes-track::-webkit-scrollbar { display: none; }
+.cliente-logo-card { flex: 0 0 calc((100% - 40px) / 3); scroll-snap-align: start; background: var(--cream); border: 1px solid var(--border); border-radius: 14px; padding: 22px 16px 18px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; transition: all .2s; }
+.cliente-logo-card:hover { border-color: rgba(201,149,42,.4); box-shadow: var(--shadow); }
+.cliente-logo-img { height: 56px; max-width: 100%; object-fit: contain; filter: grayscale(1); opacity: .75; transition: all .2s; }
+.cliente-logo-card:hover .cliente-logo-img { filter: grayscale(0); opacity: 1; }
+.cliente-logo-fallback { min-height: 56px; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 600; font-size: 14px; line-height: 1.3; color: var(--navy); }
+@media (max-width: 900px) { .cliente-logo-card { flex-basis: 84%; } }
 .traccion-quote {
   background: var(--gold-pale); border-left: 3px solid var(--gold);
   border-radius: 0 10px 10px 0; padding: 16px 20px;
@@ -533,7 +549,9 @@ footer {
     <a href="#que-es" class="topbar-link">Plataforma</a>
     <a href="#modulos" class="topbar-link">Módulos</a>
     <a href="#equipo" class="topbar-link">Equipo</a>
+    <a href="#traccion" class="topbar-link">Clientes</a>
     <a href="#blog" class="topbar-link">Novedades</a>
+    <a href="#videos-educativos" class="topbar-link">Videos</a>
   </nav>
   <button class="topbar-cta" onclick="openPiloto()">🚀 Participar en el piloto</button>
 </div>
@@ -546,26 +564,12 @@ footer {
         <span class="hero-badge-dot"></span>
         Módulo de Monitoreo · Primera versión operativa
       </div>
-      <h1 class="hero-title">
-        Expediente<br><strong>Check</strong>
+      <h1 class="hero-title-impact">
+        La inversión pública<br>no falla por falta de presupuesto.<br><strong>Falla por falta de analítica e información a tiempo.</strong>
       </h1>
       <p class="hero-subtitle">
-        Plataforma de monitoreo y aseguramiento de la calidad de inversiones públicas en ejecución, potenciada con analítica de datos e inteligencia artificial.
+        Expediente Check revisa, verifica y monitorea la inversión pública con inteligencia artificial — antes de que el error llegue a la obra.
       </p>
-      <div class="hero-features">
-        <div class="hero-feature">
-          <div class="hero-feature-icon">🔗</div>
-          <span>Integra información de sistemas como <strong style="color:rgba(255,255,255,.9)">SSI e Infobras</strong> en una sola vista ejecutiva.</span>
-        </div>
-        <div class="hero-feature">
-          <div class="hero-feature-icon">⚡</div>
-          <span>Genera <strong style="color:rgba(255,255,255,.9)">alertas tempranas</strong> sobre riesgos, retrasos e inconsistencias.</span>
-        </div>
-        <div class="hero-feature">
-          <div class="hero-feature-icon">🧠</div>
-          <span>Mejora la <strong style="color:rgba(255,255,255,.9)">toma de decisiones</strong> mediante analítica avanzada e IA.</span>
-        </div>
-      </div>
       <div class="hero-actions">
         <a href="https://monitor.expedientecheck.com" target="_blank" class="btn-hero-primary">
           🎬 Ver demo
@@ -628,22 +632,22 @@ footer {
         <div class="pillar">
           <div class="pillar-icon">📋</div>
           <div>
-            <div class="pillar-title">Revisión de expedientes técnicos</div>
-            <div class="pillar-text">Herramientas de análisis de calidad, consistencia y observaciones en expedientes técnicos antes de su aprobación.</div>
-          </div>
-        </div>
-        <div class="pillar">
-          <div class="pillar-icon">📡</div>
-          <div>
             <div class="pillar-title">Monitoreo de ejecución</div>
             <div class="pillar-text">Vista integrada con SSI e Infobras. Alertas tempranas y seguimiento del portafolio de proyectos en tiempo real.</div>
           </div>
         </div>
         <div class="pillar">
-          <div class="pillar-icon">🤖</div>
+          <div class="pillar-icon">📡</div>
           <div>
             <div class="pillar-title">Asistente normativo con IA</div>
             <div class="pillar-text">Motor de IA con base de conocimiento normativa para orientar revisiones y reducir observaciones subsanables.</div>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">🤖</div>
+          <div>
+            <div class="pillar-title">Revisión de expedientes técnicos</div>
+            <div class="pillar-text">Herramientas de análisis de calidad, consistencia y observaciones en expedientes técnicos antes de su aprobación.</div>
           </div>
         </div>
       </div>
@@ -664,8 +668,7 @@ footer {
   <span class="modulo-icon">📡</span>
   <div class="modulo-title">Monitoreo y Alertas</div>
   <div class="modulo-desc">
-    Integra información de SSI, Infobras y otras fuentes en una vista ejecutiva del portafolio de proyectos. Genera alertas tempranas sobre riesgos, retrasos e inconsistencias entre avance físico y financiero.<br><br>
-    Permite a especialistas, residentes y supervisores no solo reportar información, sino gestionar activamente las inversiones — incorporando un enfoque tipo PMO que mejora la calidad, oportunidad y uso de la información en la toma de decisiones.
+    Consolida SSI, Infobras y otras fuentes en una vista ejecutiva del portafolio. Alertas tempranas cuando el avance físico y financiero se desalinean.
   </div>
   <div class="modulo-badge">
     <span class="modulo-badge-dot"></span>
@@ -694,6 +697,8 @@ footer {
   </div>
   <div class="modulo-soon">🔧 En desarrollo</div>
 </div>
+    </div>
+    <div class="modulos-cta">
       <button class="btn-gold" onclick="openDemo()">
         🎬 Ver demo completo de toda la plataforma
       </button>
@@ -710,7 +715,7 @@ footer {
    <div class="equipo-grid">
   
  <div class="equipo-card">
-  <div class="equipo-avatar"><img src="/img/team/rocio.jpg" alt="Rocío Béjar" onerror="this.remove()">RB</div>
+  <div class="equipo-avatar"><img src="img/team/rocio.jpg" alt="Rocío Béjar" onerror="this.remove()">RB</div>
   <div class="equipo-name">Rocío Béjar</div>
   <div class="equipo-role">Liderazgo del Proyecto</div>
   <div class="equipo-bio">
@@ -721,7 +726,7 @@ footer {
 </div>
 
 <div class="equipo-card">
-  <div class="equipo-avatar"><img src="/img/team/marco.jpg" alt="Marco Béjar" onerror="this.remove()">MB</div>
+  <div class="equipo-avatar"><img src="img/team/marco.jpg" alt="Marco Béjar" onerror="this.remove()">MB</div>
   <div class="equipo-name">Marco Béjar</div>
   <div class="equipo-role">Arquitectura Tecnológica y Seguridad</div>
   <div class="equipo-bio">
@@ -732,7 +737,7 @@ footer {
 </div>
 
 <div class="equipo-card">
-  <div class="equipo-avatar"><img src="/img/team/rodrigo.jpg" alt="Rodrigo Polo" onerror="this.remove()">RS</div>
+  <div class="equipo-avatar"><img src="img/team/rodrigo.jpg" alt="Rodrigo Polo" onerror="this.remove()">RS</div>
   <div class="equipo-name">Rodrigo Polo</div>
   <div class="equipo-role">Full Stack Developer</div>
   <div class="equipo-bio">
@@ -741,18 +746,38 @@ footer {
     Experiencia en desarrollo de bots RPA con Playwright para SUNAT en Grupo Ormasan, reduciendo procesos de horas a minutos.
   </div>
 </div>
-   </section>
+   </div>
+  </div>
+</section>
 <!-- ═══ TRACCIÓN ═══ -->
 <section class="section traccion" id="traccion">
   <div class="section-inner">
     <div class="traccion-inner">
       <div class="traccion-text">
-        <div class="section-eyebrow">Avance y Tracción</div>
-        <h2 class="section-title">Primeras entidades <strong>ya en conversación</strong></h2>
-        <p>Expediente Check se encuentra en etapa de piloto, con avances concretos en la implementación del módulo de monitoreo y alertas en su primera versión.</p>
-        <p>Actualmente mantenemos acuerdos y conversaciones activas con municipalidades interesadas en implementar la primera etapa de la plataforma, validando el modelo con equipos técnicos reales en contextos de inversión pública.</p>
-        <div class="traccion-quote">
-          "El objetivo del piloto es demostrar valor real en la gestión de inversiones, con datos concretos que respalden la escalabilidad de la plataforma a más entidades del sector público."
+        <div class="section-eyebrow">Confianza Institucional</div>
+        <h2 class="section-title">Municipalidades que ya confían en <strong>Expediente Check</strong></h2>
+        <p>Acompañamos a gobiernos locales a mejorar la calidad de sus expedientes técnicos y el seguimiento de su cartera de inversión.</p>
+        <div class="clientes-carousel">
+          <button class="news-arrow prev" id="clientes-prev" onclick="clientesScroll(-1)" aria-label="Clientes anteriores">‹</button>
+          <div class="clientes-track" id="clientes-track">
+            <div class="cliente-logo-card">
+              <img class="cliente-logo-img" src="img/clientes/tacna.png" alt="Municipalidad Provincial de Tacna" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="cliente-logo-fallback" style="display:none">Municipalidad Provincial de Tacna</div>
+            </div>
+            <div class="cliente-logo-card">
+              <img class="cliente-logo-img" src="img/clientes/coronel-portillo.png" alt="Municipalidad Provincial de Coronel Portillo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="cliente-logo-fallback" style="display:none">Municipalidad Provincial de Coronel Portillo</div>
+            </div>
+            <div class="cliente-logo-card">
+              <img class="cliente-logo-img" src="img/clientes/miraflores.png" alt="Municipalidad de Miraflores" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="cliente-logo-fallback" style="display:none">Municipalidad de Miraflores</div>
+            </div>
+            <div class="cliente-logo-card">
+              <img class="cliente-logo-img" src="img/clientes/urubamba.png" alt="Municipalidad Provincial de Urubamba" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="cliente-logo-fallback" style="display:none">Municipalidad Provincial de Urubamba</div>
+            </div>
+          </div>
+          <button class="news-arrow next" id="clientes-next" onclick="clientesScroll(1)" aria-label="Clientes siguientes">›</button>
         </div>
       </div>
       <div>
@@ -762,15 +787,15 @@ footer {
             <div class="traccion-stat-label">Módulo operativo en versión piloto</div>
           </div>
           <div class="traccion-stat">
-            <div class="traccion-stat-val">3+</div>
-            <div class="traccion-stat-label">Municipalidades en proceso de incorporación</div>
+            <div class="traccion-stat-val">4</div>
+            <div class="traccion-stat-label">Municipalidades beneficiadas</div>
           </div>
           <div class="traccion-stat">
-            <div class="traccion-stat-val">2</div>
-            <div class="traccion-stat-label">Sistemas públicos integrados (SSI, Infobras)</div>
+            <div class="traccion-stat-val">4</div>
+            <div class="traccion-stat-label">Sistemas públicos integrados (Consulta amigable, SSI, SEACE, Infobras)</div>
           </div>
           <div class="traccion-stat">
-            <div class="traccion-stat-val">2025</div>
+            <div class="traccion-stat-val">2026</div>
             <div class="traccion-stat-label">Año de lanzamiento de primera versión</div>
           </div>
         </div>
@@ -820,7 +845,7 @@ footer {
       <button class="news-arrow prev" id="news-prev" onclick="newsScroll(-1)" aria-label="Noticias anteriores">‹</button>
       <div class="news-track" id="news-grid">
         <div class="blog-card">
-          <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(11,31,58,.15),rgba(11,31,58,.55)),url('/img/youtube-canal.jpg') center/cover">
+          <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(11,31,58,.15),rgba(11,31,58,.55)),url('img/youtube-canal.jpg') center/cover">
             <span class="blog-tag">Novedad</span>
           </div>
           <div class="blog-card-body">
@@ -830,7 +855,7 @@ footer {
           </div>
         </div>
         <div class="blog-card">
-          <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(11,31,58,.15),rgba(11,31,58,.75)),url('/img/lanzamiento.jpg') center/cover">
+          <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(11,31,58,.15),rgba(11,31,58,.75)),url('img/lanzamiento.jpg') center/cover">
             <span class="blog-tag">Lanzamiento</span>
           </div>
           <div class="blog-card-body">
@@ -840,7 +865,7 @@ footer {
           </div>
         </div>
         <div class="blog-card">
-          <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(6,78,59,.15),rgba(6,78,59,.75)),url('/img/piloto.jpg') center/cover">
+          <div class="blog-card-top" style="background:linear-gradient(180deg,rgba(6,78,59,.15),rgba(6,78,59,.75)),url('img/piloto.jpg') center/cover">
             <span class="blog-tag">Piloto</span>
           </div>
           <div class="blog-card-body">
@@ -855,12 +880,24 @@ footer {
   </div>
 </section>
 
-<!-- ═══ YOUTUBE ═══ -->
-<section class="section" id="videos" style="padding-top:0">
-  <div class="section-inner">
-    <div class="section-eyebrow">Canal de YouTube</div>
+<!-- ═══ PILOTO CTA ═══ -->
+<section class="piloto-section">
+  <div style="max-width:680px;margin:0 auto">
+    <div class="section-eyebrow" style="color:var(--gold-light);text-align:center;margin-bottom:16px">Programa de Piloto</div>
+    <h2 class="piloto-title">¿Tu entidad quiere implementar <strong>Expediente Check</strong>?</h2>
+    <p class="piloto-sub">Estamos seleccionando las primeras municipalidades y entidades públicas para implementar el piloto. Déjanos tus datos y coordinamos una presentación.</p>
+    <button class="btn-gold" style="font-size:16px;padding:16px 40px" onclick="openPiloto()">
+      🚀 Quiero participar en el piloto
+    </button>
+  </div>
+</section>
 
-    <h2 class="section-title">Mira nuestros <strong>últimos videos</strong></h2>
+<!-- ═══ YOUTUBE ═══ -->
+<section class="section" id="videos-educativos">
+  <div class="section-inner">
+    <div class="section-eyebrow">Videos Educativos</div>
+
+    <h2 class="section-title">Aprende con nuestros <strong>videos educativos</strong></h2>
 
     <p class="section-subtitle">
       Contenido educativo sobre inversión pública, Invierte.pe y cómo Expediente Check ayuda a mejorar la calidad del gasto.
@@ -912,24 +949,10 @@ footer {
   </div>
 </section>
 
-
-
-<!-- ═══ PILOTO CTA ═══ -->
-<section class="piloto-section">
-  <div style="max-width:680px;margin:0 auto">
-    <div class="section-eyebrow" style="color:var(--gold-light);text-align:center;margin-bottom:16px">Programa de Piloto</div>
-    <h2 class="piloto-title">¿Tu entidad quiere implementar <strong>Expediente Check</strong>?</h2>
-    <p class="piloto-sub">Estamos seleccionando las primeras municipalidades y entidades públicas para implementar el piloto. Déjanos tus datos y coordinamos una presentación.</p>
-    <button class="btn-gold" style="font-size:16px;padding:16px 40px" onclick="openPiloto()">
-      🚀 Quiero participar en el piloto
-    </button>
-  </div>
-</section>
-
 <!-- ═══ FOOTER ═══ -->
 <footer>
   <div class="footer-brand"><strong>Expediente Check</strong> · GovTech Perú</div>
-  <div class="footer-copyright">© 2025 Expediente Check. Todos los derechos reservados. Propiedad intelectual protegida.</div>
+  <div class="footer-copyright">© 2026 Expediente Check. Todos los derechos reservados.</div>
   <div class="footer-links">
     <span class="footer-link" onclick="openPiloto()">Participar en piloto</span>
     <a href="#seguridad" class="footer-link">Seguridad</a>
@@ -1095,6 +1118,31 @@ function updateNewsArrows() {
   track.addEventListener('scroll', updateNewsArrows);
   window.addEventListener('resize', updateNewsArrows);
   updateNewsArrows();
+})();
+
+// Carrusel de clientes: mismo patrón que el carrusel de novedades
+function clientesScroll(dir) {
+  const track = document.getElementById('clientes-track');
+  if (!track) return;
+  const card = track.querySelector('.cliente-logo-card');
+  const step = card ? card.getBoundingClientRect().width + 20 : track.clientWidth;
+  track.scrollBy({ left: dir * step, behavior: 'smooth' });
+}
+function updateClientesArrows() {
+  const track = document.getElementById('clientes-track');
+  const prev = document.getElementById('clientes-prev');
+  const next = document.getElementById('clientes-next');
+  if (!track || !prev || !next) return;
+  const maxScroll = track.scrollWidth - track.clientWidth - 2;
+  prev.disabled = track.scrollLeft <= 2;
+  next.disabled = track.scrollLeft >= maxScroll;
+}
+(function initClientesArrows() {
+  const track = document.getElementById('clientes-track');
+  if (!track) return;
+  track.addEventListener('scroll', updateClientesArrows);
+  window.addEventListener('resize', updateClientesArrows);
+  updateClientesArrows();
 })();
 
 // YouTube videos loader
